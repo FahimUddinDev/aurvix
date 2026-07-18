@@ -13,6 +13,7 @@ class AuthUserPayload {
   @Field() role!: string;
   @Field() hospitalId!: string;
   @Field() locale!: string;
+  @Field() mfaEnabled!: boolean;
 }
 
 @ObjectType()
@@ -62,6 +63,7 @@ export class AuthResolver {
         role: result.user.role?.name ?? '',
         hospitalId: result.user.hospitalId,
         locale: result.user.locale,
+        mfaEnabled: result.user.mfaEnabled,
       },
       mfaRequired: false,
     };
@@ -85,6 +87,7 @@ export class AuthResolver {
         role: result.user.role?.name ?? '',
         hospitalId: result.user.hospitalId,
         locale: result.user.locale,
+        mfaEnabled: result.user.mfaEnabled,
       },
       mfaRequired: false,
     };
@@ -105,6 +108,7 @@ export class AuthResolver {
         role: result.user.role?.name ?? '',
         hospitalId: result.user.hospitalId,
         locale: result.user.locale,
+        mfaEnabled: result.user.mfaEnabled,
       },
       mfaRequired: false,
     };
@@ -132,6 +136,7 @@ export class AuthResolver {
       role: (dbUser as any).role?.name ?? '',
       hospitalId: dbUser!.hospitalId,
       locale: dbUser!.locale,
+      mfaEnabled: dbUser!.mfaEnabled,
     };
   }
 

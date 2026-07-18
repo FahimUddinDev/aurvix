@@ -6,6 +6,13 @@ import { useUIStore } from '@/stores/ui.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { getAuthenticatedClient, gql } from '@/lib/graphql-client';
+
+const UPDATE_USER_LOCALE_MUTATION = gql`
+  mutation UpdateUserLocale($locale: String!) {
+    updateUserLocale(locale: $locale)
+  }
+`;
 
 interface NavItem {
   href: string;
@@ -73,8 +80,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { isSidebarCollapsed, toggleSidebar } = useUIStore();
   const { user, clearAuth } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
   const params = useParams();
   const locale = (params.locale as string) || 'en';
+
+  const handleLanguageToggle = async () => {
+    const nextLocale = locale === 'en' ? 'bn' : 'en';
+
+    if (user) {
+      try {
+        const client = getAuthenticatedClient();
+        await client.request(UPDATE_USER_LOCALE_MUTATION, { locale: nextLocale });
+      } catch (err) {
+        console.error('Failed to persist language preference:', err);
+      }
+    }
+
+    const segments = pathname.split('/');
+    segments[1] = nextLocale;
+    const newPath = segments.join('/');
+    router.push(newPath);
+  };
 
   const navGroups = [
     {
@@ -368,6 +394,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           {/* Language Toggle */}
           <button
+            onClick={handleLanguageToggle}
             style={{
               background: 'none',
               border: '1px solid var(--border)',
@@ -376,9 +403,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               fontSize: 12,
               cursor: 'pointer',
               marginRight: 8,
+              color: 'var(--text-secondary)',
             }}
           >
-            EN / বাংলা
+            {locale === 'en' ? 'বাংলা' : 'English'}
           </button>
 
           {/* Notification Bell */}

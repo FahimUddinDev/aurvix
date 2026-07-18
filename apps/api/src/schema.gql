@@ -28,6 +28,7 @@ type AuthUserPayload {
   id: String!
   lastName: String!
   locale: String!
+  mfaEnabled: Boolean!
   role: String!
 }
 

@@ -7,7 +7,22 @@
     "loginButton": "Sign In",
     "invalidCredentials": "Invalid email or password",
     "accountLocked": "Account locked. Please try again later.",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "forgotPasswordTitle": "Forgot Password",
+    "forgotPasswordSubtitle": "Enter your email to receive a password reset link",
+    "sendResetLink": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "resetPasswordTitle": "Reset Password",
+    "resetPasswordSubtitle": "Enter your new password below",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "resetPasswordButton": "Reset Password",
+    "successResetLink": "If this email is registered, we have sent a reset link.",
+    "successPasswordReset": "Your password has been successfully reset. Please login with your new password.",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "mfaRequired": "MFA Verification Required",
+    "mfaTokenLabel": "Enter 6-digit TOTP verification code",
+    "mfaVerifyButton": "Verify Code"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -110,5 +125,55 @@
     "bkash": "bKash",
     "card": "Card (SSLCommerz)",
     "currency": "BDT"
+  },
+  "settings": {
+    "security": {
+      "title": "Security Settings",
+      "mfaTitle": "Multi-Factor Authentication (MFA)",
+      "mfaDescription": "MFA adds an extra layer of security to your account by requiring a code from an authenticator app (like Google Authenticator or Microsoft Authenticator) in addition to your password.",
+      "mfaEnabled": "MFA is currently enabled on your account.",
+      "mfaDisabled": "MFA is currently disabled on your account.",
+      "enableMfa": "Enable MFA",
+      "disableMfa": "Disable MFA",
+      "setupInstructions": "Scan the QR code below with your authenticator app, then enter the 6-digit code to verify and enable MFA.",
+      "enterCode": "Verification Code",
+      "verifyAndEnable": "Verify and Enable",
+      "verifyAndDisable": "Verify and Disable",
+      "status": "MFA Status"
+    },
+    "users": {
+      "title": "User Management",
+      "createUser": "Create User",
+      "editUser": "Edit User",
+      "deactivateUser": "Deactivate User",
+      "email": "Email",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "phone": "Phone (+880...)",
+      "role": "Role",
+      "status": "Status",
+      "password": "Password",
+      "createUserSuccess": "User created successfully",
+      "updateUserSuccess": "User updated successfully",
+      "deactivateUserSuccess": "User deactivated successfully",
+      "confirmDeactivate": "Are you sure you want to deactivate this user?"
+    },
+    "roles": {
+      "title": "Role & Permission Manager",
+      "createRole": "Create Role",
+      "editRole": "Edit Role",
+      "deleteRole": "Delete Role",
+      "roleName": "Role Name (Uppercase)",
+      "displayName": "Display Name",
+      "description": "Description",
+      "permissions": "Permissions",
+      "assignPermissions": "Assign Permissions",
+      "assignSuccess": "Permissions assigned successfully",
+      "createSuccess": "Role created successfully",
+      "updateSuccess": "Role updated successfully",
+      "deleteSuccess": "Role deleted successfully",
+      "confirmDelete": "Are you sure you want to delete this role?",
+      "systemRoleWarning": "System roles cannot be modified or deleted."
+    }
   }
 }

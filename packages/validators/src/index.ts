@@ -18,3 +18,4 @@ export * from './hrm.schema';
 export * from './inventory.schema';
 export * from './consent.schema';
 export * from './notification.schema';
+export * from './config.schema';

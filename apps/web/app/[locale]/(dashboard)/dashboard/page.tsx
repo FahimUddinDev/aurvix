@@ -2,9 +2,116 @@
 
 import { useTranslations } from 'next-intl';
 import { useAuthStore } from '@/stores/auth.store';
+import { useQuery } from '@tanstack/react-query';
+import { getAuthenticatedClient, gql } from '@/lib/graphql-client';
+import { useState } from 'react';
 
-// ── KPI Card ──────────────────────────────────────────────────────────────────
+// GraphQL Queries
+const DASHBOARD_STATS_QUERY = gql`
+  query DashboardStats {
+    dashboardStats {
+      revenueToday
+      revenueThisMonth
+      appointmentsTodayCount
+      appointmentsCheckedInCount
+      occupiedBedsCount
+      totalBedsCount
+      pendingLabOrdersCount
+      pendingPrescriptionsCount
+      lowStockItemsCount
+      activePatientsCount
+    }
+  }
+`;
 
+const RECENT_ACTIVITIES_QUERY = gql`
+  query RecentActivities {
+    recentActivities(limit: 8) {
+      id
+      action
+      entity
+      createdAt
+      user {
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
+const BED_OCCUPANCY_SUMMARY_QUERY = gql`
+  query BedOccupancySummary {
+    bedOccupancySummary {
+      wardName
+      wardNameBn
+      occupiedBeds
+      totalBeds
+    }
+  }
+`;
+
+const PENDING_LAB_ORDERS_QUERY = gql`
+  query PendingLabOrders {
+    pendingLabOrders(limit: 6) {
+      id
+      status
+      createdAt
+      patient {
+        id
+        uhid
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
+const PENDING_PRESCRIPTIONS_QUERY = gql`
+  query PendingPrescriptions {
+    pendingPrescriptions(limit: 6) {
+      id
+      status
+      createdAt
+      patient {
+        id
+        uhid
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
+const LOW_STOCK_ALERTS_QUERY = gql`
+  query LowStockAlerts {
+    lowStockAlerts(limit: 6) {
+      id
+      name
+      category
+      unit
+      totalQty
+      reorderLevel
+    }
+  }
+`;
+
+const UPCOMING_FOLLOW_UPS_QUERY = gql`
+  query UpcomingFollowUps {
+    upcomingFollowUps(limit: 6) {
+      id
+      followUpDate
+      notes
+      patient {
+        id
+        uhid
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
+// Helper component for KPI Cards
 function KPICard({
   title,
   value,
@@ -32,101 +139,625 @@ function KPICard({
   );
 }
 
-// ── Simple Bar Chart placeholder ──────────────────────────────────────────────
-
-function MiniBarChart({ data }: { data: number[] }) {
-  const max = Math.max(...data);
-  return (
-    <div className="mini-bar">
-      {data.map((v, i) => (
-        <div key={i} className="mini-bar-item" style={{ height: `${(v / max) * 100}%` }} />
-      ))}
-    </div>
-  );
-}
-
-// ── Bed Heatmap ───────────────────────────────────────────────────────────────
-
-function BedCell({ status }: { status: 'AVAILABLE' | 'OCCUPIED' | 'RESERVED' | 'CLEANING' }) {
-  const colors: Record<string, string> = {
-    AVAILABLE: '#10B981',
-    OCCUPIED: '#EF4444',
-    RESERVED: '#F59E0B',
-    CLEANING: '#3B82F6',
-  };
-  return (
-    <div
-      title={status}
-      style={{
-        width: 18,
-        height: 18,
-        borderRadius: 4,
-        background: colors[status],
-        opacity: 0.85,
-      }}
-    />
-  );
-}
-
-// ── Demo data ─────────────────────────────────────────────────────────────────
-
-const DEMO_BEDS = Array.from({ length: 40 }, (_, i) => {
-  const statuses: Array<'AVAILABLE' | 'OCCUPIED' | 'RESERVED' | 'CLEANING'> = [
-    'AVAILABLE',
-    'OCCUPIED',
-    'RESERVED',
-    'CLEANING',
-  ];
-  return statuses[Math.floor(Math.random() * 4)] as
-    'AVAILABLE' | 'OCCUPIED' | 'RESERVED' | 'CLEANING';
-});
-
-const DEMO_QUEUE = [
-  {
-    token: 'T-001',
-    name: 'Karim Uddin',
-    doctor: 'Dr. Rahim',
-    wait: '5 min',
-    status: 'IN_PROGRESS',
-  },
-  {
-    token: 'T-002',
-    name: 'Fatema Khatun',
-    doctor: 'Dr. Rahim',
-    wait: '15 min',
-    status: 'CONFIRMED',
-  },
-  {
-    token: 'T-003',
-    name: 'Motiur Rahman',
-    doctor: 'Dr. Karim',
-    wait: '20 min',
-    status: 'CONFIRMED',
-  },
-  {
-    token: 'T-004',
-    name: 'Nasrin Sultana',
-    doctor: 'Dr. Fatema',
-    wait: '30 min',
-    status: 'BOOKED',
-  },
-  { token: 'T-005', name: 'Abdur Razzak', doctor: 'Dr. Fatema', wait: '35 min', status: 'BOOKED' },
-];
-
-const DEMO_CRITICAL_LABS = [
-  { patient: 'Karim Uddin', test: 'Blood Glucose', value: '420 mg/dL', flag: 'CRITICAL_HIGH' },
-  { patient: 'Aisha Begum', test: 'Hemoglobin', value: '5.2 g/dL', flag: 'CRITICAL_LOW' },
-];
-
-const REVENUE_DATA = [180, 220, 195, 250, 280, 310, 295];
-
 export default function DashboardPage() {
   const t = useTranslations('nav');
   const { user } = useAuthStore();
+  const client = getAuthenticatedClient();
+
+  // Queries
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['dashboardStats'],
+    queryFn: async () => {
+      const res: any = await client.request(DASHBOARD_STATS_QUERY);
+      return res.dashboardStats;
+    },
+  });
+
+  const { data: activities } = useQuery({
+    queryKey: ['recentActivities'],
+    queryFn: async () => {
+      const res: any = await client.request(RECENT_ACTIVITIES_QUERY);
+      return res.recentActivities;
+    },
+  });
+
+  const { data: bedSummary } = useQuery({
+    queryKey: ['bedOccupancy'],
+    queryFn: async () => {
+      const res: any = await client.request(BED_OCCUPANCY_SUMMARY_QUERY);
+      return res.bedOccupancySummary;
+    },
+  });
+
+  const { data: labOrders } = useQuery({
+    queryKey: ['pendingLabs'],
+    queryFn: async () => {
+      const res: any = await client.request(PENDING_LAB_ORDERS_QUERY);
+      return res.pendingLabOrders;
+    },
+  });
+
+  const { data: prescriptions } = useQuery({
+    queryKey: ['pendingPrescriptions'],
+    queryFn: async () => {
+      const res: any = await client.request(PENDING_PRESCRIPTIONS_QUERY);
+      return res.pendingPrescriptions;
+    },
+  });
+
+  const { data: lowStock } = useQuery({
+    queryKey: ['lowStock'],
+    queryFn: async () => {
+      const res: any = await client.request(LOW_STOCK_ALERTS_QUERY);
+      return res.lowStockAlerts;
+    },
+  });
+
+  const { data: followUps } = useQuery({
+    queryKey: ['upcomingFollowUps'],
+    queryFn: async () => {
+      const res: any = await client.request(UPCOMING_FOLLOW_UPS_QUERY);
+      return res.upcomingFollowUps;
+    },
+  });
+
+  if (statsLoading) {
+    return <div className="p-6">Loading dashboard data...</div>;
+  }
+
+  const role = user?.role || 'DOCTOR';
+
+  // Render KPIs based on role
+  const renderKPIs = () => {
+    switch (role) {
+      case 'SUPER_ADMIN':
+      case 'ADMIN':
+        return (
+          <div className="kpi-grid">
+            <KPICard
+              title="Today's Revenue"
+              value={`৳ ${stats?.revenueToday?.toLocaleString() || '0'}`}
+              subtitle="Cash & Digital transactions"
+              color="rgba(139, 92, 246, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="2"
+                >
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Monthly Revenue"
+              value={`৳ ${stats?.revenueThisMonth?.toLocaleString() || '0'}`}
+              subtitle="Current fiscal month"
+              color="rgba(16, 185, 129, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="2"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <line x1="2" y1="10" x2="22" y2="10" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Today's Appointments"
+              value={`${stats?.appointmentsTodayCount || '0'}`}
+              subtitle={`${stats?.appointmentsCheckedInCount || '0'} checked in`}
+              color="rgba(51, 102, 204, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#3366CC"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Occupied Beds"
+              value={`${stats?.occupiedBedsCount || '0'} / ${stats?.totalBedsCount || '0'}`}
+              subtitle="IPD Bed Board occupancy"
+              color="rgba(245, 158, 11, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#F59E0B"
+                  strokeWidth="2"
+                >
+                  <rect x="2" y="7" width="20" height="14" rx="2" />
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                </svg>
+              }
+            />
+          </div>
+        );
+
+      case 'DOCTOR':
+        return (
+          <div className="kpi-grid">
+            <KPICard
+              title="Today's Appointments"
+              value={`${stats?.appointmentsTodayCount || '0'}`}
+              subtitle="OPD Consultation queue"
+              color="rgba(51, 102, 204, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#3366CC"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Active Patients"
+              value={`${stats?.activePatientsCount || '0'}`}
+              color="rgba(16, 185, 129, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="2"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Pending Lab Results"
+              value={`${stats?.pendingLabOrdersCount || '0'}`}
+              subtitle="Awaiting clinical sign-off"
+              color="rgba(239, 68, 68, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EF4444"
+                  strokeWidth="2"
+                >
+                  <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11" />
+                </svg>
+              }
+            />
+          </div>
+        );
+
+      case 'PHARMACIST':
+        return (
+          <div className="kpi-grid">
+            <KPICard
+              title="Pending Prescriptions"
+              value={`${stats?.pendingPrescriptionsCount || '0'}`}
+              subtitle="Awaiting fulfillment"
+              color="rgba(139, 92, 246, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="2"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Low Stock Items"
+              value={`${stats?.lowStockItemsCount || '0'}`}
+              subtitle="Below safety margin"
+              color="rgba(239, 68, 68, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EF4444"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                </svg>
+              }
+            />
+          </div>
+        );
+
+      default:
+        return (
+          <div className="kpi-grid">
+            <KPICard
+              title="Active Patients"
+              value={`${stats?.activePatientsCount || '0'}`}
+              color="rgba(16, 185, 129, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="2"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+              }
+            />
+            <KPICard
+              title="Today's Appointments"
+              value={`${stats?.appointmentsTodayCount || '0'}`}
+              color="rgba(51, 102, 204, 0.12)"
+              icon={
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#3366CC"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                </svg>
+              }
+            />
+          </div>
+        );
+    }
+  };
+
+  // Render role-specific main widgets
+  const renderWidgets = () => {
+    switch (role) {
+      case 'SUPER_ADMIN':
+      case 'ADMIN':
+        return (
+          <div className="dash-grid">
+            {/* Bed Board Occupancy breakdown */}
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">🛏 Ward Bed Occupancy</span>
+              </div>
+              <div className="card-body">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {bedSummary?.map((ward: any) => {
+                    const percent = Math.round((ward.occupiedBeds / ward.totalBeds) * 100) || 0;
+                    return (
+                      <div key={ward.wardName}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: 6,
+                            fontSize: 13,
+                          }}
+                        >
+                          <span className="font-semibold">{ward.wardName}</span>
+                          <span
+                            style={{
+                              color:
+                                percent > 80 ? '#EF4444' : percent > 50 ? '#F59E0B' : '#10B981',
+                            }}
+                          >
+                            {ward.occupiedBeds} / {ward.totalBeds} ({percent}%)
+                          </span>
+                        </div>
+                        <div style={{ height: 8, background: '#F1F5F9', borderRadius: 99 }}>
+                          <div
+                            style={{
+                              height: '100%',
+                              width: `${percent}%`,
+                              background:
+                                percent > 80 ? '#EF4444' : percent > 50 ? '#F59E0B' : '#10B981',
+                              borderRadius: 99,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Activity Log */}
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">🕒 Recent Activity Logs</span>
+              </div>
+              <div className="card-body" style={{ padding: 0 }}>
+                {!activities?.length ? (
+                  <div className="p-6 text-center text-slate-400">No recent activity</div>
+                ) : (
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activities.map((act: any) => (
+                        <tr key={act.id}>
+                          <td className="font-semibold">
+                            {act.user ? `${act.user.firstName} ${act.user.lastName}` : 'System'}
+                          </td>
+                          <td>
+                            <code>{act.action}</code> ({act.entity})
+                          </td>
+                          <td style={{ color: '#64748B' }}>
+                            {new Date(act.createdAt).toLocaleTimeString('en-BD', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'DOCTOR':
+        return (
+          <div className="dash-grid">
+            {/* Lab results to review */}
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">🔬 Lab Results Review Queue</span>
+              </div>
+              <div className="card-body" style={{ padding: 0 }}>
+                {!labOrders?.length ? (
+                  <div className="p-6 text-center text-slate-400">No pending results</div>
+                ) : (
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>UHID</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {labOrders.map((o: any) => (
+                        <tr key={o.id}>
+                          <td>
+                            <code>{o.patient?.uhid}</code>
+                          </td>
+                          <td className="font-semibold">
+                            {o.patient?.firstName} {o.patient?.lastName}
+                          </td>
+                          <td>
+                            <span className="badge badge-warning">{o.status}</span>
+                          </td>
+                          <td style={{ color: '#64748B' }}>
+                            {new Date(o.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+            {/* Upcoming Follow Ups */}
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">📅 Patient Follow Ups</span>
+              </div>
+              <div className="card-body" style={{ padding: 0 }}>
+                {!followUps?.length ? (
+                  <div className="p-6 text-center text-slate-400">No upcoming followups</div>
+                ) : (
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>UHID</th>
+                        <th>Patient</th>
+                        <th>Notes</th>
+                        <th>Follow Up Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {followUps.map((f: any) => (
+                        <tr key={f.id}>
+                          <td>
+                            <code>{f.patient?.uhid}</code>
+                          </td>
+                          <td className="font-semibold">
+                            {f.patient?.firstName} {f.patient?.lastName}
+                          </td>
+                          <td>{f.notes || 'Routine consultation'}</td>
+                          <td style={{ color: '#64748B' }}>
+                            {new Date(f.followUpDate).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'PHARMACIST':
+        return (
+          <div className="dash-grid">
+            {/* Pending prescriptions */}
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">💊 Pending Prescriptions</span>
+              </div>
+              <div className="card-body" style={{ padding: 0 }}>
+                {!prescriptions?.length ? (
+                  <div className="p-6 text-center text-slate-400">No pending prescriptions</div>
+                ) : (
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>UHID</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {prescriptions.map((p: any) => (
+                        <tr key={p.id}>
+                          <td>
+                            <code>{p.patient?.uhid}</code>
+                          </td>
+                          <td className="font-semibold">
+                            {p.patient?.firstName} {p.patient?.lastName}
+                          </td>
+                          <td>
+                            <span className="badge badge-warning">{p.status}</span>
+                          </td>
+                          <td style={{ color: '#64748B' }}>
+                            {new Date(p.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+            {/* Low stock alerts */}
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">⚠️ Low Drug Stock Warnings</span>
+              </div>
+              <div className="card-body" style={{ padding: 0 }}>
+                {!lowStock?.length ? (
+                  <div className="p-6 text-center text-slate-400">All drug stocks normal</div>
+                ) : (
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>Medicine</th>
+                        <th>Category</th>
+                        <th>Qty</th>
+                        <th>Reorder lvl</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {lowStock.map((l: any) => (
+                        <tr key={l.id}>
+                          <td className="font-semibold text-red">{l.name}</td>
+                          <td>{l.category}</td>
+                          <td>
+                            {l.totalQty} {l.unit}
+                          </td>
+                          <td>
+                            {l.reorderLevel} {l.unit}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="dash-grid">
+            <div className="card">
+              <div className="card-header">
+                <span className="card-title">🕒 Recent Activity Logs</span>
+              </div>
+              <div className="card-body" style={{ padding: 0 }}>
+                {!activities?.length ? (
+                  <div className="p-6 text-center text-slate-400">No recent activity</div>
+                ) : (
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activities.map((act: any) => (
+                        <tr key={act.id}>
+                          <td className="font-semibold">
+                            {act.user ? `${act.user.firstName} ${act.user.lastName}` : 'System'}
+                          </td>
+                          <td>
+                            <code>{act.action}</code> ({act.entity})
+                          </td>
+                          <td style={{ color: '#64748B' }}>
+                            {new Date(act.createdAt).toLocaleTimeString('en-BD', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
 
   return (
     <div className="dashboard">
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="dash-header">
         <div>
           <h1 className="dash-title">Good morning, {user?.firstName ?? 'User'} 👋</h1>
@@ -139,338 +770,29 @@ export default function DashboardPage() {
             })}
           </p>
         </div>
-        <div className="dash-actions">
-          <button className="dash-action-btn">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-            Export
-          </button>
-        </div>
       </div>
 
-      {/* ── KPI Row ── */}
-      <div className="kpi-grid">
-        <KPICard
-          title="Today's Appointments"
-          value="128"
-          subtitle="↑ 12 from yesterday"
-          color="rgba(51,102,204,0.12)"
-          icon={
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#3366CC"
-              strokeWidth="2"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-          }
-        />
-        <KPICard
-          title="OPD Patients"
-          value="87"
-          subtitle="34 in queue"
-          color="rgba(16,185,129,0.12)"
-          icon={
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#10B981"
-              strokeWidth="2"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-          }
-        />
-        <KPICard
-          title="IPD Occupied Beds"
-          value="62/80"
-          subtitle="18 available"
-          color="rgba(245,158,11,0.12)"
-          icon={
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#F59E0B"
-              strokeWidth="2"
-            >
-              <rect x="2" y="7" width="20" height="14" rx="2" />
-              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-            </svg>
-          }
-        />
-        <KPICard
-          title="Today's Revenue"
-          value="৳ 2,84,500"
-          subtitle="↑ 8.2% vs last week"
-          color="rgba(139,92,246,0.12)"
-          icon={
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#8B5CF6"
-              strokeWidth="2"
-            >
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          }
-        />
-        <KPICard
-          title="Pending Lab Results"
-          value="23"
-          subtitle="3 critical"
-          color="rgba(239,68,68,0.12)"
-          icon={
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#EF4444"
-              strokeWidth="2"
-            >
-              <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4V9M9 14H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4" />
-            </svg>
-          }
-        />
-        <KPICard
-          title="Pharmacy Sales"
-          value="৳ 1,12,800"
-          subtitle="64 transactions"
-          color="rgba(20,184,166,0.12)"
-          icon={
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#14B8A6"
-              strokeWidth="2"
-            >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-          }
-        />
-      </div>
+      {/* Role specific KPIs row */}
+      {renderKPIs()}
 
-      {/* ── Main Grid ── */}
-      <div className="dash-grid">
-        {/* Left: Queue + Critical Labs */}
-        <div className="dash-col-left">
-          {/* Live Queue */}
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">🔴 Live OPD Queue</span>
-              <span className="badge badge-danger">Live</span>
-            </div>
-            <div className="card-body" style={{ padding: 0 }}>
-              <table className="dash-table">
-                <thead>
-                  <tr>
-                    <th>Token</th>
-                    <th>Patient</th>
-                    <th>Doctor</th>
-                    <th>Wait</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {DEMO_QUEUE.map((q) => (
-                    <tr key={q.token}>
-                      <td>
-                        <span
-                          style={{ fontFamily: 'monospace', fontWeight: 700, color: '#3366CC' }}
-                        >
-                          {q.token}
-                        </span>
-                      </td>
-                      <td>{q.name}</td>
-                      <td style={{ color: '#64748B' }}>{q.doctor}</td>
-                      <td style={{ color: '#64748B' }}>{q.wait}</td>
-                      <td>
-                        <span
-                          className={`badge ${q.status === 'IN_PROGRESS' ? 'badge-success' : q.status === 'CONFIRMED' ? 'badge-info' : 'badge-default'}`}
-                        >
-                          {q.status.replace('_', ' ')}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Critical Lab Alerts */}
-          {DEMO_CRITICAL_LABS.length > 0 && (
-            <div className="card" style={{ borderColor: '#FECACA' }}>
-              <div className="card-header" style={{ background: '#FEF2F2' }}>
-                <span className="card-title" style={{ color: '#DC2626' }}>
-                  ⚠️ Critical Lab Values
-                </span>
-              </div>
-              <div className="card-body">
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {DEMO_CRITICAL_LABS.map((lab, i) => (
-                    <div key={i} className="critical-alert">
-                      <span>🔺 {lab.flag === 'CRITICAL_HIGH' ? '▲' : '▼'}</span>
-                      <span>{lab.patient}</span>
-                      <span style={{ opacity: 0.85 }}>
-                        — {lab.test}: <strong>{lab.value}</strong>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right: Bed Board + Revenue */}
-        <div className="dash-col-right">
-          {/* Bed Board */}
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">🛏 Bed Board</span>
-              <div style={{ display: 'flex', gap: 8, fontSize: 11 }}>
-                <span style={{ color: '#10B981' }}>● Available</span>
-                <span style={{ color: '#EF4444' }}>● Occupied</span>
-                <span style={{ color: '#F59E0B' }}>● Reserved</span>
-              </div>
-            </div>
-            <div className="card-body">
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: 6 }}>
-                {DEMO_BEDS.map((status, i) => (
-                  <BedCell key={i} status={status} />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Revenue Trend */}
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">📈 Weekly Revenue (BDT)</span>
-              <span className="badge badge-success">↑ 8.2%</span>
-            </div>
-            <div className="card-body">
-              <MiniBarChart data={REVENUE_DATA} />
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: 8,
-                  fontSize: 11,
-                  color: '#94A3B8',
-                }}
-              >
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-                  <span key={d}>{d}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="card">
-            <div className="card-header">
-              <span className="card-title">📊 Department Load</span>
-            </div>
-            <div className="card-body">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {[
-                  { dept: 'General Medicine', load: 92 },
-                  { dept: 'Cardiology', load: 78 },
-                  { dept: 'Pediatrics', load: 65 },
-                  { dept: 'Gynecology', load: 55 },
-                  { dept: 'Orthopedics', load: 40 },
-                ].map(({ dept, load }) => (
-                  <div key={dept}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        marginBottom: 4,
-                        fontSize: 12,
-                      }}
-                    >
-                      <span>{dept}</span>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          color: load > 80 ? '#EF4444' : load > 60 ? '#F59E0B' : '#10B981',
-                        }}
-                      >
-                        {load}%
-                      </span>
-                    </div>
-                    <div style={{ height: 6, background: '#F1F5F9', borderRadius: 99 }}>
-                      <div
-                        style={{
-                          height: '100%',
-                          width: `${load}%`,
-                          background: load > 80 ? '#EF4444' : load > 60 ? '#F59E0B' : '#10B981',
-                          borderRadius: 99,
-                          transition: 'width 0.5s',
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Role specific widgets row */}
+      {renderWidgets()}
 
       <style>{`
-        .dashboard { padding: 0; }
-        .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .dashboard { padding: 0; display: flex; flex-direction: column; gap: 20px; }
+        .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
         .dash-title { font-size: 22px; font-weight: 700; color: var(--text-primary); }
         .dash-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-        .dash-actions { display: flex; gap: 8px; }
-        .dash-action-btn {
-          display: flex; align-items: center; gap: 6px;
-          padding: 7px 14px; border: 1px solid var(--border);
-          border-radius: var(--radius); background: white;
-          font-size: 13px; font-weight: 500; cursor: pointer;
-          transition: background var(--transition);
-        }
-        .dash-action-btn:hover { background: var(--bg-secondary); }
         .kpi-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
           gap: 16px;
-          margin-bottom: 24px;
         }
         .kpi-card {
           background: var(--bg-primary);
           border: 1px solid var(--border);
           border-radius: var(--radius-lg);
-          padding: 16px;
+          padding: 18px;
           display: flex;
           align-items: flex-start;
           gap: 14px;
@@ -484,26 +806,19 @@ export default function DashboardPage() {
         }
         .kpi-value { font-size: 22px; font-weight: 700; color: var(--text-primary); }
         .kpi-title { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-        .kpi-subtitle { font-size: 11px; color: #10B981; margin-top: 3px; }
+        .kpi-subtitle { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; }
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } }
-        .dash-col-left { display: flex; flex-direction: column; gap: 16px; }
-        .dash-col-right { display: flex; flex-direction: column; gap: 16px; }
+        @media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
         .dash-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .dash-table th { background: var(--bg-secondary); padding: 10px 16px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
-        .dash-table td { padding: 10px 16px; border-top: 1px solid var(--border); }
+        .dash-table th { background: var(--bg-secondary); padding: 10px 16px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .dash-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
         .dash-table tr:hover td { background: var(--bg-secondary); }
-        .mini-bar {
-          display: flex; gap: 6px; align-items: flex-end;
-          height: 80px;
-        }
-        .mini-bar-item {
-          flex: 1;
-          background: linear-gradient(to top, #3366CC, #5B8DEF);
-          border-radius: 4px 4px 0 0;
-          min-height: 4px;
-          transition: height 0.3s;
-        }
+        .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .badge-success { background: #ECFDF5; color: #10B981; }
+        .badge-danger { background: #FEF2F2; color: #DC2626; }
+        .badge-warning { background: #FFFBEB; color: #F59E0B; }
+        code { background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--brand-blue); }
+        .text-red { color: #DC2626 !important; }
       `}</style>
     </div>
   );

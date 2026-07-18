@@ -7,7 +7,22 @@
     "loginButton": "প্রবেশ করুন",
     "invalidCredentials": "ইমেইল বা পাসওয়ার্ড ভুল",
     "accountLocked": "অ্যাকাউন্ট লক। পরে আবার চেষ্টা করুন।",
-    "logout": "বের হন"
+    "logout": "বের হন",
+    "forgotPasswordTitle": "পাসওয়ার্ড পুনরুদ্ধার",
+    "forgotPasswordSubtitle": "পাসওয়ার্ড রিসেট লিঙ্ক পেতে আপনার ইমেইল লিখুন",
+    "sendResetLink": "রিসেট লিঙ্ক পাঠান",
+    "backToLogin": "লগইনে ফিরে যান",
+    "resetPasswordTitle": "পাসওয়ার্ড রিসেট",
+    "resetPasswordSubtitle": "নিচে আপনার নতুন পাসওয়ার্ড লিখুন",
+    "newPassword": "নতুন পাসওয়ার্ড",
+    "confirmPassword": "পাসওয়ার্ড নিশ্চিত করুন",
+    "resetPasswordButton": "পাসওয়ার্ড রিসেট করুন",
+    "successResetLink": "যদি এই ইমেইলটি নিবন্ধিত থাকে, তবে আমরা একটি রিসেট লিঙ্ক পাঠিয়েছি।",
+    "successPasswordReset": "আপনার পাসওয়ার্ড সফলভাবে রিসেট করা হয়েছে। অনুগ্রহ করে নতুন পাসওয়ার্ড দিয়ে লগইন করুন।",
+    "passwordsDoNotMatch": "পাসওয়ার্ড মিলছে না",
+    "mfaRequired": "MFA যাচাইকরণ প্রয়োজন",
+    "mfaTokenLabel": "৬-ডিজিটের TOTP যাচাইকরণ কোড লিখুন",
+    "mfaVerifyButton": "কোড যাচাই করুন"
   },
   "nav": {
     "dashboard": "ড্যাশবোর্ড",
@@ -98,5 +113,55 @@
     "bkash": "বিকাশ",
     "card": "কার্ড (এসএসএলকমার্জ)",
     "currency": "টাকা"
+  },
+  "settings": {
+    "security": {
+      "title": "নিরাপত্তা সেটিংস",
+      "mfaTitle": "মাল্টি-ফ্যাক্টর অথেন্টিকেশন (MFA)",
+      "mfaDescription": "MFA আপনার অ্যাকাউন্টে পাসওয়ার্ডের পাশাপাশি প্রমাণীকরণকারী অ্যাপ (যেমন গুগল অথেনটিকেটর) থেকে কোড চেয়ে অতিরিক্ত নিরাপত্তা যোগ করে।",
+      "mfaEnabled": "আপনার অ্যাকাউন্টে MFA বর্তমানে সক্রিয় আছে।",
+      "mfaDisabled": "আপনার অ্যাকাউন্টে MFA বর্তমানে নিষ্ক্রিয় আছে।",
+      "enableMfa": "MFA সক্রিয় করুন",
+      "disableMfa": "MFA নিষ্ক্রিয় করুন",
+      "setupInstructions": "Scan the QR code below with your authenticator app, then enter the 6-digit code to verify and enable MFA.",
+      "enterCode": "যাচাইকরণ কোড",
+      "verifyAndEnable": "যাচাই এবং সক্রিয় করুন",
+      "verifyAndDisable": "যাচাই এবং নিষ্ক্রিয় করুন",
+      "status": "MFA অবস্থা"
+    },
+    "users": {
+      "title": "ব্যবহারকারী ব্যবস্থাপনা",
+      "createUser": "ব্যবহারকারী তৈরি করুন",
+      "editUser": "ব্যবহারকারী সম্পাদনা করুন",
+      "deactivateUser": "ব্যবহারকারী নিষ্ক্রিয় করুন",
+      "email": "ইমেইল",
+      "firstName": "নামের প্রথম অংশ",
+      "lastName": "নামের শেষ অংশ",
+      "phone": "ফোন (+880...)",
+      "role": "ভূমিকা",
+      "status": "অবস্থা",
+      "password": "পাসওয়ার্ড",
+      "createUserSuccess": "ব্যবহারকারী সফলভাবে তৈরি হয়েছে",
+      "updateUserSuccess": "ব্যবহারকারী সফলভাবে হালনাগাদ হয়েছে",
+      "deactivateUserSuccess": "ব্যবহারকারী সফলভাবে নিষ্ক্রিয় হয়েছে",
+      "confirmDeactivate": "আপনি কি নিশ্চিত যে এই ব্যবহারকারীকে নিষ্ক্রিয় করতে চান?"
+    },
+    "roles": {
+      "title": "ভূমিকা ও অনুমতি ব্যবস্থাপনা",
+      "createRole": "ভূমিকা তৈরি করুন",
+      "editRole": "ভূমিকা সম্পাদনা করুন",
+      "deleteRole": "ভূমিকা মুছুন",
+      "roleName": "ভূমিকা নাম (বড় হাতের)",
+      "displayName": "প্রদর্শিত নাম",
+      "description": "বিবরণ",
+      "permissions": "অনুমতিসমূহ",
+      "assignPermissions": "অনুমতি বরাদ্দ করুন",
+      "assignSuccess": "অনুমতি সফলভাবে বরাদ্দ হয়েছে",
+      "createSuccess": "ভূমিকা সফলভাবে তৈরি হয়েছে",
+      "updateSuccess": "ভূমিকা সফলভাবে হালনাগাদ হয়েছে",
+      "deleteSuccess": "ভূমিকা সফলভাবে মুছে ফেলা হয়েছে",
+      "confirmDelete": "আপনি কি নিশ্চিত যে এই ভূমিকাটি মুছে ফেলতে চান?",
+      "systemRoleWarning": "সিস্টেম ভূমিকা পরিবর্তন বা মুছে ফেলা যাবে না।"
+    }
   }
 }
