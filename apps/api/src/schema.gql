@@ -1,0 +1,561 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AllergyInput {
+  allergen: String!
+  reaction: String
+  severity: String! = "MODERATE"
+}
+
+type AppointmentSummaryItem {
+  count: Int!
+  status: String!
+}
+
+type AuthPayload {
+  accessToken: String
+  mfaRequired: Boolean
+  mfaToken: String
+  refreshToken: String
+  user: AuthUserPayload
+}
+
+type AuthUserPayload {
+  email: String!
+  firstName: String!
+  hospitalId: String!
+  id: String!
+  lastName: String!
+  locale: String!
+  role: String!
+}
+
+type BedOccupancySummaryItem {
+  occupiedBeds: Int!
+  totalBeds: Int!
+  wardName: String!
+  wardNameBn: String!
+}
+
+type Branch {
+  address: String
+  createdAt: DateTime!
+  hospitalId: ID!
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  nameBn: String
+  phone: String
+  updatedAt: DateTime!
+}
+
+input CreateBranchInput {
+  address: String
+  name: String!
+  nameBn: String
+  phone: String
+}
+
+input CreateDepartmentInput {
+  code: String!
+  description: String
+  name: String!
+  nameBn: String
+}
+
+input CreatePatientInput {
+  address: String
+  addressBn: String
+  allergies: [AllergyInput!]
+  bloodGroup: String
+  dateOfBirth: DateTime!
+  email: String
+  emergencyContacts: [EmergencyContactInput!]
+  firstName: String!
+  firstNameBn: String
+  gender: String!
+  lastName: String!
+  lastNameBn: String
+  nid: String
+  phone: String!
+}
+
+input CreateRoleInput {
+  description: String
+  displayName: String!
+  name: String!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  phone: String
+  roleId: ID!
+}
+
+type DashboardFollowUp {
+  followUpDate: DateTime!
+  id: ID!
+  notes: String!
+  patient: DashboardPatient!
+}
+
+type DashboardInventoryItem {
+  category: String!
+  id: ID!
+  name: String!
+  reorderLevel: Int!
+  totalQty: Int!
+  unit: String!
+}
+
+type DashboardLabOrder {
+  createdAt: DateTime!
+  id: ID!
+  patient: DashboardPatient!
+  status: String!
+}
+
+type DashboardPatient {
+  firstName: String!
+  id: ID!
+  lastName: String!
+  phone: String!
+  uhid: String!
+}
+
+type DashboardPrescription {
+  createdAt: DateTime!
+  id: ID!
+  patient: DashboardPatient!
+  status: String!
+}
+
+type DashboardStats {
+  activePatientsCount: Int!
+  appointmentsCheckedInCount: Int!
+  appointmentsTodayCount: Int!
+  lowStockItemsCount: Int!
+  occupiedBedsCount: Int!
+  pendingLabOrdersCount: Int!
+  pendingPrescriptionsCount: Int!
+  revenueThisMonth: Float!
+  revenueToday: Float!
+  totalBedsCount: Int!
+}
+
+type DashboardUser {
+  email: String!
+  firstName: String!
+  id: ID!
+  lastName: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Department {
+  code: String
+  createdAt: DateTime!
+  description: String
+  headUserId: ID
+  hospitalId: ID!
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  nameBn: String
+  updatedAt: DateTime!
+}
+
+type EmergencyContact {
+  id: ID!
+  name: String!
+  phone: String!
+  relationship: String!
+}
+
+input EmergencyContactInput {
+  name: String!
+  phone: String!
+  relationship: String!
+}
+
+type Hospital {
+  address: String
+  addressBn: String
+  branches: [Branch!]!
+  createdAt: DateTime!
+  currency: String!
+  email: String
+  fiscalYearStart: Int!
+  id: ID!
+  isActive: Boolean!
+  logoUrl: String
+  name: String!
+  nameBn: String
+  phone: String
+  timezone: String!
+  uhidPrefix: String!
+  updatedAt: DateTime!
+  website: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type MfaSecretPayload {
+  qrCodeUrl: String!
+  secret: String!
+}
+
+type Mutation {
+  """Assign permissions to a user role"""
+  assignPermissionsToRole(permissionIds: [ID!]!, roleId: ID!): Role!
+
+  """Create a new hospital branch"""
+  createBranch(input: CreateBranchInput!): Branch!
+
+  """Create a new department"""
+  createDepartment(input: CreateDepartmentInput!): Department!
+
+  """Register a new patient record"""
+  createPatient(input: CreatePatientInput!): Patient!
+
+  """Create a new user role"""
+  createRole(input: CreateRoleInput!): Role!
+
+  """Create a new user"""
+  createUser(input: CreateUserInput!): User!
+
+  """Deactivate a user"""
+  deactivateUser(id: ID!): User!
+
+  """Delete an existing user role"""
+  deleteRole(id: ID!): Boolean!
+
+  """Disable MFA for user"""
+  disableMfa(token: String!): Boolean!
+
+  """Verify and enable MFA for user"""
+  enableMfa(token: String!): Boolean!
+
+  """Request password reset email link"""
+  forgotPassword(email: String!): Boolean!
+
+  """Generate MFA TOTP secret and QR code"""
+  generateMfaSecret: MfaSecretPayload!
+
+  """Login with email and password"""
+  login(input: LoginInput!): AuthPayload!
+
+  """Logout and invalidate tokens"""
+  logout(refreshToken: String): Boolean!
+
+  """Merge clinical profiles to resolve deduplication"""
+  mergePatients(sourceId: ID!, targetId: ID!): Boolean!
+
+  """Refresh access token using refresh token"""
+  refreshToken(token: String!): AuthPayload!
+
+  """Reset password using token from email"""
+  resetPassword(password: String!, token: String!): Boolean!
+
+  """Update details of an existing branch"""
+  updateBranch(id: ID!, input: UpdateBranchInput!): Branch!
+
+  """Create or update system configuration"""
+  updateConfig(key: String!, value: String!): SystemConfig!
+
+  """Update an existing department"""
+  updateDepartment(id: ID!, input: UpdateDepartmentInput!): Department!
+
+  """Update hospital core configurations"""
+  updateHospital(id: ID, input: UpdateHospitalInput!): Hospital!
+
+  """Update demographics and clinical markers of a patient"""
+  updatePatient(id: ID!, input: UpdatePatientInput!): Patient!
+
+  """Update an existing user role"""
+  updateRole(id: ID!, input: UpdateRoleInput!): Role!
+
+  """Update an existing user"""
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+
+  """Update current user UI language preference"""
+  updateUserLocale(locale: String!): Boolean!
+
+  """Verify TOTP code for MFA login"""
+  verifyMfaLogin(code: String!, mfaToken: String!): AuthPayload!
+}
+
+type PaginatedPatients {
+  items: [Patient!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+}
+
+type PaginatedUsers {
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  items: [User!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+input PaginationInput {
+  limit: Int! = 10
+  page: Int! = 1
+}
+
+type Patient {
+  address: String
+  addressBn: String
+  allergies: [PatientAllergy!]!
+  bloodGroup: String
+  createdAt: DateTime!
+  dateOfBirth: DateTime!
+  documents: [PatientDocument!]!
+  email: String
+  emergencyContacts: [EmergencyContact!]!
+  firstName: String!
+  firstNameBn: String
+  gender: String!
+  hospitalId: ID!
+  id: ID!
+  isActive: Boolean!
+  lastName: String!
+  lastNameBn: String
+  nidDecrypted: String
+  phone: String!
+  photoUrl: String
+  uhid: String!
+  updatedAt: DateTime!
+}
+
+type PatientAllergy {
+  allergen: String!
+  id: ID!
+  isActive: Boolean!
+  reaction: String
+  severity: String!
+}
+
+type PatientDocument {
+  createdAt: DateTime!
+  description: String
+  fileSizeKb: Int
+  fileType: String!
+  fileUrl: String!
+  id: ID!
+  name: String!
+}
+
+type Permission {
+  action: String!
+  description: String
+  displayName: String!
+  id: ID!
+  module: String!
+  name: String!
+}
+
+type Query {
+  """Summary of occupied beds per ward"""
+  bedOccupancySummary: [BedOccupancySummaryItem!]!
+
+  """Get all branches of the current hospital"""
+  branches: [Branch!]!
+
+  """Get role-specific KPI stats"""
+  dashboardStats: DashboardStats!
+
+  """Get all departments for current hospital"""
+  departments: [Department!]!
+
+  """Get details of the current hospital"""
+  hospital(id: ID): Hospital!
+
+  """List inventory items below reorder level"""
+  lowStockAlerts(limit: Int! = 10): [DashboardInventoryItem!]!
+
+  """Get current authenticated user"""
+  me: AuthUserPayload!
+
+  """Get detailed patient profile"""
+  patient(id: ID!): Patient!
+
+  """Fetch clinical timeline for a patient"""
+  patientTimeline(id: ID!): [TimelineItem!]!
+
+  """Search and paginate patient listings"""
+  patients(limit: Int! = 10, page: Int! = 1, search: String): PaginatedPatients!
+
+  """List pending lab orders"""
+  pendingLabOrders(limit: Int! = 10): [DashboardLabOrder!]!
+
+  """List pending prescriptions"""
+  pendingPrescriptions(limit: Int! = 10): [DashboardPrescription!]!
+
+  """Get all system permissions"""
+  permissions: [Permission!]!
+
+  """Get recent activity logs"""
+  recentActivities(limit: Int! = 10): [RecentActivity!]!
+
+  """Get all roles"""
+  roles: [Role!]!
+
+  """Get all system settings for user hospital"""
+  systemConfig: [SystemConfig!]!
+
+  """Summary of today appointments grouped by status"""
+  todayAppointmentsSummary: [AppointmentSummaryItem!]!
+
+  """List upcoming client follow ups"""
+  upcomingFollowUps(limit: Int! = 10): [DashboardFollowUp!]!
+
+  """Get paginated list of users"""
+  users(filters: UserFilters, pagination: PaginationInput): PaginatedUsers!
+}
+
+type RecentActivity {
+  action: String!
+  createdAt: DateTime!
+  entity: String!
+  entityId: String
+  id: ID!
+  user: DashboardUser
+  userId: String
+}
+
+type Role {
+  description: String
+  displayName: String!
+  id: ID!
+  isSystem: Boolean!
+  name: String!
+  rolePermissions: [RolePermission!]!
+}
+
+type RolePermission {
+  id: ID!
+  permission: Permission
+  permissionId: ID!
+  roleId: ID!
+}
+
+type SystemConfig {
+  category: String!
+  createdAt: DateTime!
+  dataType: String!
+  hospitalId: ID!
+  id: ID!
+  isPublic: Boolean!
+  key: String!
+  updatedAt: DateTime!
+  value: String!
+}
+
+type TimelineItem {
+  date: DateTime!
+  description: String
+  id: ID!
+  title: String!
+  type: String!
+}
+
+input UpdateBranchInput {
+  address: String
+  isActive: Boolean
+  name: String
+  nameBn: String
+  phone: String
+}
+
+input UpdateDepartmentInput {
+  code: String
+  description: String
+  isActive: Boolean
+  name: String
+  nameBn: String
+}
+
+input UpdateHospitalInput {
+  address: String
+  addressBn: String
+  currency: String
+  email: String
+  logoUrl: String
+  name: String
+  nameBn: String
+  phone: String
+  timezone: String
+  uhidPrefix: String
+  website: String
+}
+
+input UpdatePatientInput {
+  address: String
+  addressBn: String
+  allergies: [AllergyInput!]
+  bloodGroup: String
+  dateOfBirth: DateTime
+  email: String
+  emergencyContacts: [EmergencyContactInput!]
+  firstName: String
+  firstNameBn: String
+  gender: String
+  lastName: String
+  lastNameBn: String
+  nid: String
+  phone: String
+}
+
+input UpdateRoleInput {
+  description: String
+  displayName: String
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  phone: String
+  roleId: ID
+  status: String
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  hospitalId: ID!
+  id: ID!
+  lastName: String!
+  phone: String
+  role: UserRole
+  roleId: ID!
+  status: String!
+  updatedAt: DateTime!
+}
+
+input UserFilters {
+  query: String
+  roleId: String
+  status: String
+}
+
+type UserRole {
+  displayName: String!
+  id: ID!
+  name: String!
+}
