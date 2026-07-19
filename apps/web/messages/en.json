@@ -27,6 +27,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "patients": "Patients",
+    "doctors": "Doctors",
     "appointments": "Appointments",
     "emr": "EMR / OPD",
     "laboratory": "Laboratory",

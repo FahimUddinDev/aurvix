@@ -27,6 +27,7 @@
   "nav": {
     "dashboard": "ড্যাশবোর্ড",
     "patients": "রোগী",
+    "doctors": "চিকিৎসক",
     "appointments": "অ্যাপয়েন্টমেন্ট",
     "emr": "ইএমআর / ওপিডি",
     "laboratory": "ল্যাবরেটরি",

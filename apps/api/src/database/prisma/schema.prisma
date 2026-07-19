@@ -228,24 +228,24 @@ enum JobApplicationStatus {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Hospital {
-  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name           String
-  nameBn         String?
-  address        String?
-  addressBn      String?
-  phone          String?
-  email          String?
-  website        String?
-  logoUrl        String?
-  timezone       String       @default("Asia/Dhaka")
-  currency       String       @default("BDT")
-  uhidPrefix     String       @default("AV")
-  fiscalYearStart Int         @default(7) // July
-  isActive       Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  createdBy      String?
-  updatedBy      String?
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String
+  nameBn          String?
+  address         String?
+  addressBn       String?
+  phone           String?
+  email           String?
+  website         String?
+  logoUrl         String?
+  timezone        String   @default("Asia/Dhaka")
+  currency        String   @default("BDT")
+  uhidPrefix      String   @default("AV")
+  fiscalYearStart Int      @default(7) // July
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdBy       String?
+  updatedBy       String?
 
   branches       Branch[]
   departments    Department[]
@@ -279,13 +279,13 @@ model Branch {
 }
 
 model Role {
-  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String           @unique
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique
   displayName String
   description String?
-  isSystem    Boolean          @default(false)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   createdBy   String?
   updatedBy   String?
 
@@ -329,26 +329,26 @@ model RolePermission {
 }
 
 model User {
-  id                   String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId           String     @db.Uuid
-  roleId               String     @db.Uuid
-  email                String     @unique
-  passwordHash         String
-  firstName            String
-  lastName             String
-  phone                String?
-  avatarUrl            String?
-  status               UserStatus @default(ACTIVE)
-  failedLoginAttempts  Int        @default(0)
-  lockedUntil          DateTime?
-  mfaEnabled           Boolean    @default(false)
-  lastLoginAt          DateTime?
-  lastLoginIp          String?
-  locale               String     @default("en")
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime   @updatedAt
-  createdBy            String?
-  updatedBy            String?
+  id                  String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId          String     @db.Uuid
+  roleId              String     @db.Uuid
+  email               String     @unique
+  passwordHash        String
+  firstName           String
+  lastName            String
+  phone               String?
+  avatarUrl           String?
+  status              UserStatus @default(ACTIVE)
+  failedLoginAttempts Int        @default(0)
+  lockedUntil         DateTime?
+  mfaEnabled          Boolean    @default(false)
+  lastLoginAt         DateTime?
+  lastLoginIp         String?
+  locale              String     @default("en")
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  createdBy           String?
+  updatedBy           String?
 
   hospital      Hospital       @relation(fields: [hospitalId], references: [id])
   role          Role           @relation(fields: [roleId], references: [id])
@@ -415,9 +415,9 @@ model Department {
   createdBy   String?
   updatedBy   String?
 
-  hospital    Hospital        @relation(fields: [hospitalId], references: [id])
-  doctors     DoctorProfile[]
-  employees   Employee[]
+  hospital  Hospital        @relation(fields: [hospitalId], references: [id])
+  doctors   DoctorProfile[]
+  employees Employee[]
 
   @@unique([hospitalId, code])
   @@index([hospitalId])
@@ -449,40 +449,40 @@ model SystemConfig {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Patient {
-  id                   String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId           String      @db.Uuid
-  uhid                 String      @unique
-  firstName            String
-  lastName             String
-  firstNameBn          String?
-  lastNameBn           String?
-  dateOfBirth          DateTime
-  gender               Gender
-  bloodGroup           BloodGroup?
-  phone                String
-  email                String?
-  address              String?
-  addressBn            String?
-  nidEncrypted         String?     // pgcrypto encrypted
-  photoUrl             String?
-  isActive             Boolean     @default(true)
-  deletedAt            DateTime?
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
-  createdBy            String?
-  updatedBy            String?
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String      @db.Uuid
+  uhid         String      @unique
+  firstName    String
+  lastName     String
+  firstNameBn  String?
+  lastNameBn   String?
+  dateOfBirth  DateTime
+  gender       Gender
+  bloodGroup   BloodGroup?
+  phone        String
+  email        String?
+  address      String?
+  addressBn    String?
+  nidEncrypted String? // pgcrypto encrypted
+  photoUrl     String?
+  isActive     Boolean     @default(true)
+  deletedAt    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  createdBy    String?
+  updatedBy    String?
 
-  hospital           Hospital            @relation(fields: [hospitalId], references: [id])
-  allergies          PatientAllergy[]
-  emergencyContacts  EmergencyContact[]
-  documents          PatientDocument[]
-  appointments       Appointment[]
-  visits             Visit[]
-  bills              Bill[]
-  admissions         Admission[]
-  consents           PatientConsent[]
-  feedbacks          PatientFeedback[]
-  followUps          FollowUpSchedule[]
+  hospital          Hospital           @relation(fields: [hospitalId], references: [id])
+  allergies         PatientAllergy[]
+  emergencyContacts EmergencyContact[]
+  documents         PatientDocument[]
+  appointments      Appointment[]
+  visits            Visit[]
+  bills             Bill[]
+  admissions        Admission[]
+  consents          PatientConsent[]
+  feedbacks         PatientFeedback[]
+  followUps         FollowUpSchedule[]
 
   @@index([hospitalId])
   @@index([phone])
@@ -491,17 +491,17 @@ model Patient {
 }
 
 model PatientAllergy {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  patientId   String   @db.Uuid
-  allergen    String
-  reaction    String?
-  severity    String   @default("MODERATE")
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  patientId  String   @db.Uuid
+  allergen   String
+  reaction   String?
+  severity   String   @default("MODERATE")
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
@@ -566,8 +566,8 @@ model DoctorProfile {
   createdBy       String?
   updatedBy       String?
 
-  user         User               @relation(fields: [userId], references: [id])
-  department   Department         @relation(fields: [departmentId], references: [id])
+  user         User             @relation(fields: [userId], references: [id])
+  department   Department       @relation(fields: [departmentId], references: [id])
   schedules    DoctorSchedule[]
   appointments Appointment[]
   fees         DoctorFee[]
@@ -580,9 +580,9 @@ model DoctorSchedule {
   id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   hospitalId      String   @db.Uuid
   doctorId        String   @db.Uuid
-  dayOfWeek       Int      // 0=Sunday ... 6=Saturday
-  startTime       String   // "09:00"
-  endTime         String   // "17:00"
+  dayOfWeek       Int // 0=Sunday ... 6=Saturday
+  startTime       String // "09:00"
+  endTime         String // "17:00"
   slotDurationMin Int      @default(15)
   maxPatients     Int      @default(20)
   isActive        Boolean  @default(true)
@@ -620,28 +620,28 @@ model DoctorFee {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Appointment {
-  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId      String            @db.Uuid
-  patientId       String            @db.Uuid
-  doctorId        String            @db.Uuid
-  departmentId    String            @db.Uuid
-  type            AppointmentType   @default(SCHEDULED)
-  status          AppointmentStatus @default(BOOKED)
-  scheduledDate   DateTime
-  slotStartTime   String?
-  slotEndTime     String?
-  tokenNumber     String?
-  chiefComplaint  String?
-  cancelReason    String?
-  checkedInAt     DateTime?
-  completedAt     DateTime?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  createdBy       String?
-  updatedBy       String?
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId     String            @db.Uuid
+  patientId      String            @db.Uuid
+  doctorId       String            @db.Uuid
+  departmentId   String            @db.Uuid
+  type           AppointmentType   @default(SCHEDULED)
+  status         AppointmentStatus @default(BOOKED)
+  scheduledDate  DateTime
+  slotStartTime  String?
+  slotEndTime    String?
+  tokenNumber    String?
+  chiefComplaint String?
+  cancelReason   String?
+  checkedInAt    DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  createdBy      String?
+  updatedBy      String?
 
-  patient    Patient        @relation(fields: [patientId], references: [id])
-  doctor     DoctorProfile  @relation(fields: [doctorId], references: [id])
+  patient    Patient       @relation(fields: [patientId], references: [id])
+  doctor     DoctorProfile @relation(fields: [doctorId], references: [id])
   queueToken QueueToken?
   visit      Visit?
 
@@ -653,16 +653,16 @@ model Appointment {
 }
 
 model QueueToken {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String   @db.Uuid
-  appointmentId String   @unique @db.Uuid
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String    @db.Uuid
+  appointmentId String    @unique @db.Uuid
   tokenNumber   String
   displayLabel  String
-  estimatedWait Int?     // minutes
+  estimatedWait Int? // minutes
   calledAt      DateTime?
   completedAt   DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   createdBy     String?
   updatedBy     String?
 
@@ -676,31 +676,31 @@ model QueueToken {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Visit {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String    @db.Uuid
-  patientId     String    @db.Uuid
-  appointmentId String?   @unique @db.Uuid
-  doctorId      String    @db.Uuid
-  departmentId  String    @db.Uuid
-  visitDate     DateTime  @default(now())
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId     String    @db.Uuid
+  patientId      String    @db.Uuid
+  appointmentId  String?   @unique @db.Uuid
+  doctorId       String    @db.Uuid
+  departmentId   String    @db.Uuid
+  visitDate      DateTime  @default(now())
   chiefComplaint String?
-  isCompleted   Boolean   @default(false)
-  completedAt   DateTime?
-  deletedAt     DateTime? // soft delete for clinical retention
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  isCompleted    Boolean   @default(false)
+  completedAt    DateTime?
+  deletedAt      DateTime? // soft delete for clinical retention
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  createdBy      String?
+  updatedBy      String?
 
-  patient     Patient          @relation(fields: [patientId], references: [id])
-  appointment Appointment?     @relation(fields: [appointmentId], references: [id])
-  diagnoses   Diagnosis[]
-  notes       ClinicalNote[]
-  vitals      VitalSign[]
+  patient       Patient          @relation(fields: [patientId], references: [id])
+  appointment   Appointment?     @relation(fields: [appointmentId], references: [id])
+  diagnoses     Diagnosis[]
+  notes         ClinicalNote[]
+  vitals        VitalSign[]
   prescriptions Prescription[]
-  labOrders   LabOrder[]
-  radOrders   RadiologyOrder[]
-  consents    PatientConsent[]
+  labOrders     LabOrder[]
+  radOrders     RadiologyOrder[]
+  consents      PatientConsent[]
 
   @@index([hospitalId])
   @@index([patientId])
@@ -743,23 +743,23 @@ model ClinicalNote {
 }
 
 model VitalSign {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String   @db.Uuid
-  visitId       String?  @db.Uuid
-  admissionId   String?  @db.Uuid
-  systolicBp    Int?
-  diastolicBp   Int?
-  heartRate     Int?
-  temperature   Decimal? @db.Decimal(5, 2)
-  spo2          Int?
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId      String   @db.Uuid
+  visitId         String?  @db.Uuid
+  admissionId     String?  @db.Uuid
+  systolicBp      Int?
+  diastolicBp     Int?
+  heartRate       Int?
+  temperature     Decimal? @db.Decimal(5, 2)
+  spo2            Int?
   respiratoryRate Int?
-  weightKg      Decimal? @db.Decimal(6, 2)
-  heightCm      Decimal? @db.Decimal(6, 2)
-  recordedAt    DateTime @default(now())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  weightKg        Decimal? @db.Decimal(6, 2)
+  heightCm        Decimal? @db.Decimal(6, 2)
+  recordedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdBy       String?
+  updatedBy       String?
 
   visit     Visit?     @relation(fields: [visitId], references: [id])
   admission Admission? @relation(fields: [admissionId], references: [id])
@@ -768,16 +768,16 @@ model VitalSign {
 }
 
 model ICD10Code {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code        String   @unique
-  description String
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code          String   @unique
+  description   String
   descriptionBn String?
-  category    String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  category      String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   @@index([code])
   @@map("icd10_codes")
@@ -788,26 +788,26 @@ model ICD10Code {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Medicine {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId      String   @db.Uuid
-  genericName     String
-  brandName       String?
-  category        String
-  dosageForm      String   // tablet, capsule, syrup, injection
-  strength        String?
-  manufacturer    String?
-  unitPrice       Decimal  @db.Decimal(10, 2)
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  createdBy       String?
-  updatedBy       String?
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String   @db.Uuid
+  genericName  String
+  brandName    String?
+  category     String
+  dosageForm   String // tablet, capsule, syrup, injection
+  strength     String?
+  manufacturer String?
+  unitPrice    Decimal  @db.Decimal(10, 2)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    String?
+  updatedBy    String?
 
-  prescriptionItems  PrescriptionItem[]
-  dispenseItems      PharmacyDispenseItem[]
-  stockBatches       StockBatch[]
-  drugInteractions   DrugInteraction[]  @relation("DrugA")
-  interactsWith      DrugInteraction[]  @relation("DrugB")
+  prescriptionItems PrescriptionItem[]
+  dispenseItems     PharmacyDispenseItem[]
+  stockBatches      StockBatch[]
+  drugInteractions  DrugInteraction[]      @relation("DrugA")
+  interactsWith     DrugInteraction[]      @relation("DrugB")
 
   @@index([hospitalId])
   @@index([genericName])
@@ -815,10 +815,10 @@ model Medicine {
 }
 
 model DrugInteraction {
-  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  drugAId     String  @db.Uuid
-  drugBId     String  @db.Uuid
-  severity    String  @default("MODERATE") // MINOR, MODERATE, MAJOR
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  drugAId     String   @db.Uuid
+  drugBId     String   @db.Uuid
+  severity    String   @default("MODERATE") // MINOR, MODERATE, MAJOR
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -833,22 +833,22 @@ model DrugInteraction {
 }
 
 model Prescription {
-  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String             @db.Uuid
-  visitId     String             @db.Uuid
-  patientId   String             @db.Uuid
-  doctorId    String             @db.Uuid
-  status      PrescriptionStatus @default(ACTIVE)
-  notes       String?
-  validUntil  DateTime?
-  deletedAt   DateTime?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String             @db.Uuid
+  visitId    String             @db.Uuid
+  patientId  String             @db.Uuid
+  doctorId   String             @db.Uuid
+  status     PrescriptionStatus @default(ACTIVE)
+  notes      String?
+  validUntil DateTime?
+  deletedAt  DateTime?
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
-  visit   Visit              @relation(fields: [visitId], references: [id])
-  items   PrescriptionItem[]
+  visit     Visit              @relation(fields: [visitId], references: [id])
+  items     PrescriptionItem[]
   dispenses PharmacyDispense[]
 
   @@index([hospitalId])
@@ -883,23 +883,23 @@ model PrescriptionItem {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model LabTest {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId     String   @db.Uuid
-  name           String
-  nameBn         String?
-  code           String?
-  category       String
-  sampleType     String
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId        String   @db.Uuid
+  name              String
+  nameBn            String?
+  code              String?
+  category          String
+  sampleType        String
   normalRangeMale   String?
   normalRangeFemale String?
-  unit           String?
-  price          Decimal  @db.Decimal(10, 2)
-  turnaroundHrs  Int      @default(24)
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  createdBy      String?
-  updatedBy      String?
+  unit              String?
+  price             Decimal  @db.Decimal(10, 2)
+  turnaroundHrs     Int      @default(24)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  createdBy         String?
+  updatedBy         String?
 
   labOrderItems LabOrderItem[]
 
@@ -908,19 +908,19 @@ model LabTest {
 }
 
 model LabOrder {
-  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String         @db.Uuid
-  visitId     String         @db.Uuid
-  patientId   String         @db.Uuid
-  doctorId    String         @db.Uuid
-  status      LabOrderStatus @default(PENDING)
-  priority    String         @default("ROUTINE") // ROUTINE, URGENT, STAT
-  notes       String?
-  deletedAt   DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String         @db.Uuid
+  visitId    String         @db.Uuid
+  patientId  String         @db.Uuid
+  doctorId   String         @db.Uuid
+  status     LabOrderStatus @default(PENDING)
+  priority   String         @default("ROUTINE") // ROUTINE, URGENT, STAT
+  notes      String?
+  deletedAt  DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   visit   Visit          @relation(fields: [visitId], references: [id])
   items   LabOrderItem[]
@@ -949,17 +949,17 @@ model LabOrderItem {
 }
 
 model LabSample {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId   String    @db.Uuid
-  orderId      String    @db.Uuid
-  barcode      String    @unique
-  sampleType   String
-  collectedAt  DateTime?
-  collectedBy  String?   @db.Uuid
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  createdBy    String?
-  updatedBy    String?
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId  String    @db.Uuid
+  orderId     String    @db.Uuid
+  barcode     String    @unique
+  sampleType  String
+  collectedAt DateTime?
+  collectedBy String?   @db.Uuid
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdBy   String?
+  updatedBy   String?
 
   order LabOrder @relation(fields: [orderId], references: [id])
 
@@ -1027,8 +1027,8 @@ model RadiologyOrder {
   createdBy    String?
   updatedBy    String?
 
-  visit    Visit              @relation(fields: [visitId], references: [id])
-  modality RadiologyModality  @relation(fields: [modalityId], references: [id])
+  visit    Visit             @relation(fields: [visitId], references: [id])
+  modality RadiologyModality @relation(fields: [modalityId], references: [id])
   report   RadiologyReport?
 
   @@index([hospitalId])
@@ -1036,19 +1036,19 @@ model RadiologyOrder {
 }
 
 model RadiologyReport {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String    @db.Uuid
-  orderId     String    @unique @db.Uuid
-  findings    String?
-  impression  String?
-  reportUrl   String?
-  uploadedBy  String?   @db.Uuid
-  approvedBy  String?   @db.Uuid
-  approvedAt  DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String    @db.Uuid
+  orderId    String    @unique @db.Uuid
+  findings   String?
+  impression String?
+  reportUrl  String?
+  uploadedBy String?   @db.Uuid
+  approvedBy String?   @db.Uuid
+  approvedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   order RadiologyOrder @relation(fields: [orderId], references: [id])
 
@@ -1060,22 +1060,22 @@ model RadiologyReport {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model PharmacyShift {
-  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId         String             @db.Uuid
-  openedBy           String             @db.Uuid
-  closedBy           String?            @db.Uuid
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId         String              @db.Uuid
+  openedBy           String              @db.Uuid
+  closedBy           String?             @db.Uuid
   status             PharmacyShiftStatus @default(OPEN)
-  openingBalance     Decimal            @db.Decimal(12, 2)
-  expectedCash       Decimal?           @db.Decimal(12, 2)
-  actualCash         Decimal?           @db.Decimal(12, 2)
-  expectedBkash      Decimal?           @db.Decimal(12, 2)
-  expectedSslcommerz Decimal?           @db.Decimal(12, 2)
-  variance           Decimal?           @db.Decimal(12, 2)
+  openingBalance     Decimal             @db.Decimal(12, 2)
+  expectedCash       Decimal?            @db.Decimal(12, 2)
+  actualCash         Decimal?            @db.Decimal(12, 2)
+  expectedBkash      Decimal?            @db.Decimal(12, 2)
+  expectedSslcommerz Decimal?            @db.Decimal(12, 2)
+  variance           Decimal?            @db.Decimal(12, 2)
   notes              String?
-  openedAt           DateTime           @default(now())
+  openedAt           DateTime            @default(now())
   closedAt           DateTime?
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   createdBy          String?
   updatedBy          String?
 
@@ -1096,24 +1096,24 @@ model PharmacyDispense {
   createdBy      String?
   updatedBy      String?
 
-  prescription Prescription         @relation(fields: [prescriptionId], references: [id])
+  prescription Prescription           @relation(fields: [prescriptionId], references: [id])
   items        PharmacyDispenseItem[]
 
   @@map("pharmacy_dispenses")
 }
 
 model PharmacyDispenseItem {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  dispenseId  String   @db.Uuid
-  medicineId  String   @db.Uuid
-  batchId     String   @db.Uuid
-  qty         Int
-  unitPrice   Decimal  @db.Decimal(10, 2)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  dispenseId String   @db.Uuid
+  medicineId String   @db.Uuid
+  batchId    String   @db.Uuid
+  qty        Int
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   dispense PharmacyDispense @relation(fields: [dispenseId], references: [id], onDelete: Cascade)
   medicine Medicine         @relation(fields: [medicineId], references: [id])
@@ -1123,24 +1123,24 @@ model PharmacyDispenseItem {
 }
 
 model PharmacySale {
-  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId   String        @db.Uuid
-  shiftId      String        @db.Uuid
-  invoiceNo    String        @unique
-  patientId    String?       @db.Uuid
-  subtotal     Decimal       @db.Decimal(12, 2)
-  discount     Decimal       @default(0) @db.Decimal(12, 2)
-  total        Decimal       @db.Decimal(12, 2)
-  isVoided     Boolean       @default(false)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  createdBy    String?
-  updatedBy    String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  shiftId    String   @db.Uuid
+  invoiceNo  String   @unique
+  patientId  String?  @db.Uuid
+  subtotal   Decimal  @db.Decimal(12, 2)
+  discount   Decimal  @default(0) @db.Decimal(12, 2)
+  total      Decimal  @db.Decimal(12, 2)
+  isVoided   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
-  shift        PharmacyShift       @relation(fields: [shiftId], references: [id])
-  items        PharmacySaleItem[]
-  payments     PharmacySplitPayment[]
-  returns      PharmacyReturn[]
+  shift    PharmacyShift          @relation(fields: [shiftId], references: [id])
+  items    PharmacySaleItem[]
+  payments PharmacySplitPayment[]
+  returns  PharmacyReturn[]
 
   @@map("pharmacy_sales")
 }
@@ -1167,16 +1167,16 @@ model PharmacySaleItem {
 }
 
 model PharmacySplitPayment {
-  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String        @db.Uuid
-  saleId        String        @db.Uuid
-  method        PaymentMethod
-  amount        Decimal       @db.Decimal(12, 2)
-  reference     String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  id         String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String        @db.Uuid
+  saleId     String        @db.Uuid
+  method     PaymentMethod
+  amount     Decimal       @db.Decimal(12, 2)
+  reference  String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   sale PharmacySale @relation(fields: [saleId], references: [id], onDelete: Cascade)
 
@@ -1195,7 +1195,7 @@ model PharmacyReturn {
   createdBy  String?
   updatedBy  String?
 
-  sale  PharmacySale           @relation(fields: [saleId], references: [id])
+  sale  PharmacySale         @relation(fields: [saleId], references: [id])
   items PharmacyReturnItem[]
 
   @@map("pharmacy_returns")
@@ -1224,18 +1224,18 @@ model PharmacyReturnItem {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model ServicePrice {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  name        String
-  nameBn      String?
-  category    String
-  price       Decimal  @db.Decimal(10, 2)
-  taxPercent  Decimal  @default(0) @db.Decimal(5, 2)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  name       String
+  nameBn     String?
+  category   String
+  price      Decimal  @db.Decimal(10, 2)
+  taxPercent Decimal  @default(0) @db.Decimal(5, 2)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   lineItems BillLineItem[]
 
@@ -1244,25 +1244,25 @@ model ServicePrice {
 }
 
 model Bill {
-  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId   String     @db.Uuid
-  patientId    String     @db.Uuid
-  admissionId  String?    @db.Uuid
-  visitId      String?    @db.Uuid
-  billNo       String     @unique
-  status       BillStatus @default(DRAFT)
-  subtotal     Decimal    @db.Decimal(12, 2)
-  taxAmount    Decimal    @default(0) @db.Decimal(12, 2)
-  discount     Decimal    @default(0) @db.Decimal(12, 2)
-  totalAmount  Decimal    @db.Decimal(12, 2)
-  paidAmount   Decimal    @default(0) @db.Decimal(12, 2)
-  dueAmount    Decimal    @db.Decimal(12, 2)
-  notes        String?
-  deletedAt    DateTime?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  createdBy    String?
-  updatedBy    String?
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId  String     @db.Uuid
+  patientId   String     @db.Uuid
+  admissionId String?    @db.Uuid
+  visitId     String?    @db.Uuid
+  billNo      String     @unique
+  status      BillStatus @default(DRAFT)
+  subtotal    Decimal    @db.Decimal(12, 2)
+  taxAmount   Decimal    @default(0) @db.Decimal(12, 2)
+  discount    Decimal    @default(0) @db.Decimal(12, 2)
+  totalAmount Decimal    @db.Decimal(12, 2)
+  paidAmount  Decimal    @default(0) @db.Decimal(12, 2)
+  dueAmount   Decimal    @db.Decimal(12, 2)
+  notes       String?
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  createdBy   String?
+  updatedBy   String?
 
   patient   Patient        @relation(fields: [patientId], references: [id])
   lineItems BillLineItem[]
@@ -1295,21 +1295,21 @@ model BillLineItem {
 }
 
 model Payment {
-  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String        @db.Uuid
-  billId      String        @db.Uuid
-  method      PaymentMethod
-  status      PaymentStatus @default(PENDING)
-  amount      Decimal       @db.Decimal(12, 2)
-  reference   String?
-  notes       String?
-  paidAt      DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String        @db.Uuid
+  billId     String        @db.Uuid
+  method     PaymentMethod
+  status     PaymentStatus @default(PENDING)
+  amount     Decimal       @db.Decimal(12, 2)
+  reference  String?
+  notes      String?
+  paidAt     DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
-  bill       Bill                  @relation(fields: [billId], references: [id])
+  bill       Bill               @relation(fields: [billId], references: [id])
   gatewayLog PaymentGatewayLog?
 
   @@index([hospitalId])
@@ -1317,18 +1317,18 @@ model Payment {
 }
 
 model PaymentGatewayLog {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  paymentId   String   @unique @db.Uuid
-  gateway     String
-  request     Json?
-  response    Json?
-  status      String
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String   @db.Uuid
+  paymentId     String   @unique @db.Uuid
+  gateway       String
+  request       Json?
+  response      Json?
+  status        String
   transactionId String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   payment Payment @relation(fields: [paymentId], references: [id])
 
@@ -1340,18 +1340,18 @@ model PaymentGatewayLog {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Ward {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  name        String
-  nameBn      String?
-  type        String   // GENERAL, SEMI_PRIVATE, PRIVATE, ICU
-  floor       String?
-  dailyRate   Decimal  @db.Decimal(10, 2)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  name       String
+  nameBn     String?
+  type       String // GENERAL, SEMI_PRIVATE, PRIVATE, ICU
+  floor      String?
+  dailyRate  Decimal  @db.Decimal(10, 2)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   hospital Hospital @relation(fields: [hospitalId], references: [id])
   beds     Bed[]
@@ -1380,27 +1380,27 @@ model Bed {
 }
 
 model Admission {
-  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId        String          @db.Uuid
-  patientId         String          @db.Uuid
-  bedId             String          @db.Uuid
-  admittedBy        String          @db.Uuid
-  status            AdmissionStatus @default(ACTIVE)
-  admissionDate     DateTime        @default(now())
-  dischargeDate     DateTime?
-  admissionNotes    String?
-  deletedAt         DateTime?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  createdBy         String?
-  updatedBy         String?
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId     String          @db.Uuid
+  patientId      String          @db.Uuid
+  bedId          String          @db.Uuid
+  admittedBy     String          @db.Uuid
+  status         AdmissionStatus @default(ACTIVE)
+  admissionDate  DateTime        @default(now())
+  dischargeDate  DateTime?
+  admissionNotes String?
+  deletedAt      DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  createdBy      String?
+  updatedBy      String?
 
-  patient         Patient          @relation(fields: [patientId], references: [id])
-  bed             Bed              @relation(fields: [bedId], references: [id])
-  vitals          VitalSign[]
+  patient          Patient           @relation(fields: [patientId], references: [id])
+  bed              Bed               @relation(fields: [bedId], references: [id])
+  vitals           VitalSign[]
   medicationAdmins MedicationAdmin[]
-  nursingNotes    NursingNote[]
-  transfers       BedTransfer[]
+  nursingNotes     NursingNote[]
+  transfers        BedTransfer[]
   dischargeSummary DischargeSummary?
 
   @@index([hospitalId])
@@ -1409,17 +1409,17 @@ model Admission {
 }
 
 model BedTransfer {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  admissionId String   @db.Uuid
-  fromBedId   String   @db.Uuid
-  toBedId     String   @db.Uuid
-  reason      String?
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String   @db.Uuid
+  admissionId   String   @db.Uuid
+  fromBedId     String   @db.Uuid
+  toBedId       String   @db.Uuid
+  reason        String?
   transferredAt DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   admission Admission @relation(fields: [admissionId], references: [id])
 
@@ -1443,20 +1443,20 @@ model NursingNote {
 }
 
 model MedicationAdmin {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String   @db.Uuid
-  admissionId   String   @db.Uuid
-  medicineId    String   @db.Uuid
-  scheduledAt   DateTime
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId     String    @db.Uuid
+  admissionId    String    @db.Uuid
+  medicineId     String    @db.Uuid
+  scheduledAt    DateTime
   administeredAt DateTime?
-  dose          String
-  route         String
-  status        String   @default("SCHEDULED") // SCHEDULED, GIVEN, MISSED, HELD
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  dose           String
+  route          String
+  status         String    @default("SCHEDULED") // SCHEDULED, GIVEN, MISSED, HELD
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  createdBy      String?
+  updatedBy      String?
 
   admission Admission @relation(fields: [admissionId], references: [id])
 
@@ -1464,19 +1464,19 @@ model MedicationAdmin {
 }
 
 model DischargeSummary {
-  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId          String   @db.Uuid
-  admissionId         String   @unique @db.Uuid
-  finalDiagnosis      String
-  treatmentSummary    String?
-  dischargeCondition  String   @default("STABLE")
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId           String    @db.Uuid
+  admissionId          String    @unique @db.Uuid
+  finalDiagnosis       String
+  treatmentSummary     String?
+  dischargeCondition   String    @default("STABLE")
   followUpInstructions String?
-  medications         Json?
-  followUpDate        DateTime?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  createdBy           String?
-  updatedBy           String?
+  medications          Json?
+  followUpDate         DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  createdBy            String?
+  updatedBy            String?
 
   admission Admission @relation(fields: [admissionId], references: [id])
 
@@ -1512,9 +1512,9 @@ model Employee {
   createdBy       String?
   updatedBy       String?
 
-  hospital        Hospital          @relation(fields: [hospitalId], references: [id])
-  department      Department        @relation(fields: [departmentId], references: [id])
-  user            User?             @relation(fields: [userId], references: [id])
+  hospital        Hospital            @relation(fields: [hospitalId], references: [id])
+  department      Department          @relation(fields: [departmentId], references: [id])
+  user            User?               @relation(fields: [userId], references: [id])
   documents       EmployeeDocument[]
   attendances     Attendance[]
   shifts          ShiftAssignment[]
@@ -1532,16 +1532,16 @@ model Employee {
 }
 
 model EmployeeDocument {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  employeeId  String   @db.Uuid
-  name        String
-  docType     String
-  fileUrl     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  employeeId String   @db.Uuid
+  name       String
+  docType    String
+  fileUrl    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
@@ -1549,16 +1549,16 @@ model EmployeeDocument {
 }
 
 model ShiftTemplate {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  name        String
-  startTime   String
-  endTime     String
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  name       String
+  startTime  String
+  endTime    String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   assignments ShiftAssignment[]
 
@@ -1566,16 +1566,16 @@ model ShiftTemplate {
 }
 
 model ShiftAssignment {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  employeeId  String   @db.Uuid
-  shiftId     String   @db.Uuid
-  startDate   DateTime
-  endDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String    @db.Uuid
+  employeeId String    @db.Uuid
+  shiftId    String    @db.Uuid
+  startDate  DateTime
+  endDate    DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   employee Employee      @relation(fields: [employeeId], references: [id])
   shift    ShiftTemplate @relation(fields: [shiftId], references: [id])
@@ -1583,44 +1583,25 @@ model ShiftAssignment {
   @@map("shift_assignments")
 }
 
-model Attendance {
-  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String         @db.Uuid
-  employeeId  String         @db.Uuid
-  type        AttendanceType
-  timestamp   DateTime
-  method      String         @default("MANUAL") // MANUAL, BIOMETRIC
-  ipAddress   String?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  createdBy   String?
-  updatedBy   String?
-
-  employee Employee @relation(fields: [employeeId], references: [id])
-
-  @@index([employeeId])
-  @@index([timestamp])
-  @@map("attendances")
-}
-
 model LeaveType {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String   @db.Uuid
-  name          String
-  nameBn        String?
-  daysPerYear   Int
-  isPaid        Boolean  @default(true)
-  carryOver     Boolean  @default(false)
-  maxCarryDays  Int      @default(0)
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String   @db.Uuid
+  name         String
+  nameBn       String?
+  daysPerYear  Int
+  isPaid       Boolean  @default(true)
+  carryOver    Boolean  @default(false)
+  maxCarryDays Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    String?
+  updatedBy    String?
 
   requests LeaveRequest[]
   balances LeaveBalance[]
 
+  @@index([hospitalId])
   @@map("leave_types")
 }
 
@@ -1642,6 +1623,9 @@ model LeaveBalance {
   leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
 
   @@unique([employeeId, leaveTypeId, year])
+  @@index([hospitalId])
+  @@index([employeeId])
+  @@index([leaveTypeId])
   @@map("leave_balances")
 }
 
@@ -1665,50 +1649,53 @@ model LeaveRequest {
   employee  Employee  @relation(fields: [employeeId], references: [id])
   leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
 
+  @@index([hospitalId])
+  @@index([employeeId])
+  @@index([leaveTypeId])
   @@map("leave_requests")
 }
 
 model SalaryStructure {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId      String   @db.Uuid
-  name            String
-  basic           Decimal  @db.Decimal(12, 2)
-  houseRent       Decimal  @default(0) @db.Decimal(12, 2)
-  medical         Decimal  @default(0) @db.Decimal(12, 2)
-  transport       Decimal  @default(0) @db.Decimal(12, 2)
-  providentFund   Decimal  @default(0) @db.Decimal(12, 2)
-  incomeTaxRate   Decimal  @default(0) @db.Decimal(5, 2)
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  createdBy       String?
-  updatedBy       String?
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String   @db.Uuid
+  name          String
+  basic         Decimal  @db.Decimal(12, 2)
+  houseRent     Decimal  @default(0) @db.Decimal(12, 2)
+  medical       Decimal  @default(0) @db.Decimal(12, 2)
+  transport     Decimal  @default(0) @db.Decimal(12, 2)
+  providentFund Decimal  @default(0) @db.Decimal(12, 2)
+  incomeTaxRate Decimal  @default(0) @db.Decimal(5, 2)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   @@map("salary_structures")
 }
 
 model PayrollRecord {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId      String   @db.Uuid
-  employeeId      String   @db.Uuid
-  month           Int
-  year            Int
-  basic           Decimal  @db.Decimal(12, 2)
-  houseRent       Decimal  @default(0) @db.Decimal(12, 2)
-  medical         Decimal  @default(0) @db.Decimal(12, 2)
-  transport       Decimal  @default(0) @db.Decimal(12, 2)
-  overtime        Decimal  @default(0) @db.Decimal(12, 2)
-  grossSalary     Decimal  @db.Decimal(12, 2)
-  providentFund   Decimal  @default(0) @db.Decimal(12, 2)
-  incomeTax       Decimal  @default(0) @db.Decimal(12, 2)
-  absenceDeduction Decimal @default(0) @db.Decimal(12, 2)
-  otherDeductions Decimal  @default(0) @db.Decimal(12, 2)
-  netSalary       Decimal  @db.Decimal(12, 2)
-  isFinalized     Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  createdBy       String?
-  updatedBy       String?
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId       String   @db.Uuid
+  employeeId       String   @db.Uuid
+  month            Int
+  year             Int
+  basic            Decimal  @db.Decimal(12, 2)
+  houseRent        Decimal  @default(0) @db.Decimal(12, 2)
+  medical          Decimal  @default(0) @db.Decimal(12, 2)
+  transport        Decimal  @default(0) @db.Decimal(12, 2)
+  overtime         Decimal  @default(0) @db.Decimal(12, 2)
+  grossSalary      Decimal  @db.Decimal(12, 2)
+  providentFund    Decimal  @default(0) @db.Decimal(12, 2)
+  incomeTax        Decimal  @default(0) @db.Decimal(12, 2)
+  absenceDeduction Decimal  @default(0) @db.Decimal(12, 2)
+  otherDeductions  Decimal  @default(0) @db.Decimal(12, 2)
+  netSalary        Decimal  @db.Decimal(12, 2)
+  isFinalized      Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  createdBy        String?
+  updatedBy        String?
 
   employee Employee @relation(fields: [employeeId], references: [id])
 
@@ -1717,17 +1704,17 @@ model PayrollRecord {
 }
 
 model JobPosting {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId   String   @db.Uuid
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String    @db.Uuid
   title        String
-  departmentId String   @db.Uuid
+  departmentId String    @db.Uuid
   description  String?
   requirements String?
-  vacancies    Int      @default(1)
+  vacancies    Int       @default(1)
   deadline     DateTime?
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   createdBy    String?
   updatedBy    String?
 
@@ -1737,19 +1724,19 @@ model JobPosting {
 }
 
 model JobApplication {
-  id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String               @db.Uuid
-  jobId       String               @db.Uuid
+  id            String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String               @db.Uuid
+  jobId         String               @db.Uuid
   applicantName String
-  email       String
-  phone       String
-  resumeUrl   String?
-  status      JobApplicationStatus @default(RECEIVED)
-  notes       String?
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  email         String
+  phone         String
+  resumeUrl     String?
+  status        JobApplicationStatus @default(RECEIVED)
+  notes         String?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   job        JobPosting  @relation(fields: [jobId], references: [id])
   interviews Interview[]
@@ -1758,18 +1745,18 @@ model JobApplication {
 }
 
 model Interview {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId     String   @db.Uuid
-  applicationId  String   @db.Uuid
-  interviewerId  String   @db.Uuid
-  scheduledAt    DateTime
-  feedback       String?
-  rating         Int?
-  isCompleted    Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  createdBy      String?
-  updatedBy      String?
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String   @db.Uuid
+  applicationId String   @db.Uuid
+  interviewerId String   @db.Uuid
+  scheduledAt   DateTime
+  feedback      String?
+  rating        Int?
+  isCompleted   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   application JobApplication @relation(fields: [applicationId], references: [id])
   interviewer Employee       @relation(fields: [interviewerId], references: [id])
@@ -1852,16 +1839,16 @@ model PerformanceReview {
 }
 
 model Grievance {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  employeeId  String   @db.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId  String    @db.Uuid
+  employeeId  String    @db.Uuid
   subject     String
   description String
   resolution  String?
-  isResolved  Boolean  @default(false)
+  isResolved  Boolean   @default(false)
   resolvedAt  DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   createdBy   String?
   updatedBy   String?
 
@@ -1875,18 +1862,18 @@ model Grievance {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model Supplier {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  name        String
-  contact     String?
-  phone       String?
-  email       String?
-  address     String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  name       String
+  contact    String?
+  phone      String?
+  email      String?
+  address    String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   purchaseOrders PurchaseOrder[]
 
@@ -1894,20 +1881,20 @@ model Supplier {
 }
 
 model InventoryItem {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String   @db.Uuid
-  name          String
-  category      String
-  unit          String
-  reorderLevel  Int      @default(0)
-  totalQty      Int      @default(0)
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String   @db.Uuid
+  name         String
+  category     String
+  unit         String
+  reorderLevel Int      @default(0)
+  totalQty     Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    String?
+  updatedBy    String?
 
-  hospital     Hospital         @relation(fields: [hospitalId], references: [id])
+  hospital     Hospital           @relation(fields: [hospitalId], references: [id])
   batches      StockBatch[]
   transactions StockTransaction[]
 
@@ -1916,19 +1903,19 @@ model InventoryItem {
 }
 
 model StockBatch {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String    @db.Uuid
-  itemId        String?   @db.Uuid
-  medicineId    String?   @db.Uuid
-  batchNumber   String
-  expiryDate    DateTime?
-  qty           Int
-  unitCost      Decimal   @db.Decimal(10, 2)
-  purchaseOrderId String? @db.Uuid
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId      String    @db.Uuid
+  itemId          String?   @db.Uuid
+  medicineId      String?   @db.Uuid
+  batchNumber     String
+  expiryDate      DateTime?
+  qty             Int
+  unitCost        Decimal   @db.Decimal(10, 2)
+  purchaseOrderId String?   @db.Uuid
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  createdBy       String?
+  updatedBy       String?
 
   item          InventoryItem?         @relation(fields: [itemId], references: [id])
   medicine      Medicine?              @relation(fields: [medicineId], references: [id])
@@ -1941,17 +1928,17 @@ model StockBatch {
 }
 
 model StockTransaction {
-  id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String               @db.Uuid
-  itemId      String               @db.Uuid
-  type        StockTransactionType
-  qty         Int
-  reference   String?
-  notes       String?
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String               @db.Uuid
+  itemId     String               @db.Uuid
+  type       StockTransactionType
+  qty        Int
+  reference  String?
+  notes      String?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   item InventoryItem @relation(fields: [itemId], references: [id])
 
@@ -1959,21 +1946,21 @@ model StockTransaction {
 }
 
 model PurchaseOrder {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  supplierId  String   @db.Uuid
-  poNumber    String   @unique
-  status      String   @default("DRAFT") // DRAFT, APPROVED, ORDERED, RECEIVED, CANCELLED
-  totalAmount Decimal  @db.Decimal(12, 2)
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId  String    @db.Uuid
+  supplierId  String    @db.Uuid
+  poNumber    String    @unique
+  status      String    @default("DRAFT") // DRAFT, APPROVED, ORDERED, RECEIVED, CANCELLED
+  totalAmount Decimal   @db.Decimal(12, 2)
   notes       String?
   orderedAt   DateTime?
   receivedAt  DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   createdBy   String?
   updatedBy   String?
 
-  supplier Supplier   @relation(fields: [supplierId], references: [id])
+  supplier Supplier            @relation(fields: [supplierId], references: [id])
   items    PurchaseOrderItem[]
   batches  StockBatch[]
 
@@ -1981,17 +1968,17 @@ model PurchaseOrder {
 }
 
 model PurchaseOrderItem {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  orderId     String   @db.Uuid
-  itemName    String
-  qty         Int
-  unitCost    Decimal  @db.Decimal(10, 2)
-  total       Decimal  @db.Decimal(12, 2)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  orderId    String   @db.Uuid
+  itemName   String
+  qty        Int
+  unitCost   Decimal  @db.Decimal(10, 2)
+  total      Decimal  @db.Decimal(12, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   order PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
@@ -2003,18 +1990,18 @@ model PurchaseOrderItem {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model PatientFeedback {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  patientId   String   @db.Uuid
-  visitId     String?  @db.Uuid
-  rating      Int      // 1–5
-  npsScore    Int?     // 0–10
-  comment     String?
-  isPublic    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  patientId  String   @db.Uuid
+  visitId    String?  @db.Uuid
+  rating     Int // 1–5
+  npsScore   Int? // 0–10
+  comment    String?
+  isPublic   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   patient Patient @relation(fields: [patientId], references: [id])
 
@@ -2045,20 +2032,20 @@ model FollowUpSchedule {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model BloodDonor {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String      @db.Uuid
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId  String     @db.Uuid
   name        String
   phone       String
   bloodGroup  BloodGroup
   dateOfBirth DateTime?
   address     String?
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   createdBy   String?
   updatedBy   String?
 
-  hospital Hospital   @relation(fields: [hospitalId], references: [id])
+  hospital Hospital    @relation(fields: [hospitalId], references: [id])
   units    BloodUnit[]
 
   @@map("blood_donors")
@@ -2081,7 +2068,7 @@ model BloodUnit {
   createdBy       String?
   updatedBy       String?
 
-  donor        BloodDonor       @relation(fields: [donorId], references: [id])
+  donor        BloodDonor         @relation(fields: [donorId], references: [id])
   crossMatches CrossMatchResult[]
 
   @@index([bloodGroup])
@@ -2090,17 +2077,17 @@ model BloodUnit {
 }
 
 model BloodRequest {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  patientId   String   @db.Uuid
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId  String     @db.Uuid
+  patientId   String     @db.Uuid
   bloodGroup  BloodGroup
   units       Int
-  urgency     String   @default("ROUTINE") // ROUTINE, URGENT, EMERGENCY
-  status      String   @default("PENDING") // PENDING, FULFILLED, CANCELLED
-  requestedAt DateTime @default(now())
+  urgency     String     @default("ROUTINE") // ROUTINE, URGENT, EMERGENCY
+  status      String     @default("PENDING") // PENDING, FULFILLED, CANCELLED
+  requestedAt DateTime   @default(now())
   fulfilledAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   createdBy   String?
   updatedBy   String?
 
@@ -2110,18 +2097,18 @@ model BloodRequest {
 }
 
 model CrossMatchResult {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  unitId      String   @db.Uuid
-  requestId   String   @db.Uuid
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String    @db.Uuid
+  unitId       String    @db.Uuid
+  requestId    String    @db.Uuid
   isCompatible Boolean
-  testedBy    String?  @db.Uuid
-  testedAt    DateTime?
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  testedBy     String?   @db.Uuid
+  testedAt     DateTime?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  createdBy    String?
+  updatedBy    String?
 
   unit    BloodUnit    @relation(fields: [unitId], references: [id])
   request BloodRequest @relation(fields: [requestId], references: [id])
@@ -2134,18 +2121,18 @@ model CrossMatchResult {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model ConsentTemplate {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  title       String
-  titleBn     String?
-  content     String
-  contentBn   String?
-  type        String   // SURGERY, PROCEDURE, ANESTHESIA, BLOOD, DATA
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String   @db.Uuid
+  title      String
+  titleBn    String?
+  content    String
+  contentBn  String?
+  type       String // SURGERY, PROCEDURE, ANESTHESIA, BLOOD, DATA
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   consents PatientConsent[]
 
@@ -2153,21 +2140,21 @@ model ConsentTemplate {
 }
 
 model PatientConsent {
-  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId    String        @db.Uuid
-  patientId     String        @db.Uuid
-  templateId    String        @db.Uuid
-  visitId       String?       @db.Uuid
-  admissionId   String?       @db.Uuid
-  status        ConsentStatus @default(PENDING)
-  signatureUrl  String?
-  witnessName   String?
-  signedAt      DateTime?
-  expiresAt     DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  createdBy     String?
-  updatedBy     String?
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId   String        @db.Uuid
+  patientId    String        @db.Uuid
+  templateId   String        @db.Uuid
+  visitId      String?       @db.Uuid
+  admissionId  String?       @db.Uuid
+  status       ConsentStatus @default(PENDING)
+  signatureUrl String?
+  witnessName  String?
+  signedAt     DateTime?
+  expiresAt    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  createdBy    String?
+  updatedBy    String?
 
   patient  Patient         @relation(fields: [patientId], references: [id])
   template ConsentTemplate @relation(fields: [templateId], references: [id])
@@ -2181,20 +2168,20 @@ model PatientConsent {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model NotificationTemplate {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String   @db.Uuid
-  name        String
-  type        NotificationType
-  trigger     String
-  subjectEn   String?
-  subjectBn   String?
-  bodyEn      String
-  bodyBn      String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String           @db.Uuid
+  name       String
+  type       NotificationType
+  trigger    String
+  subjectEn  String?
+  subjectBn  String?
+  bodyEn     String
+  bodyBn     String?
+  isActive   Boolean          @default(true)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   logs NotificationLog[]
 
@@ -2202,21 +2189,21 @@ model NotificationTemplate {
 }
 
 model NotificationLog {
-  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId  String             @db.Uuid
-  templateId  String?            @db.Uuid
-  type        NotificationType
-  recipient   String
-  subject     String?
-  body        String
-  status      NotificationStatus @default(PENDING)
-  sentAt      DateTime?
-  attempts    Int                @default(0)
-  errorMsg    String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  createdBy   String?
-  updatedBy   String?
+  id         String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String             @db.Uuid
+  templateId String?            @db.Uuid
+  type       NotificationType
+  recipient  String
+  subject    String?
+  body       String
+  status     NotificationStatus @default(PENDING)
+  sentAt     DateTime?
+  attempts   Int                @default(0)
+  errorMsg   String?
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  createdBy  String?
+  updatedBy  String?
 
   template NotificationTemplate? @relation(fields: [templateId], references: [id])
 
@@ -2228,22 +2215,22 @@ model NotificationLog {
 // ═══════════════════════════════════════════════════════════════════════════
 
 model AuditLog {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  hospitalId   String      @db.Uuid
-  userId       String?     @db.Uuid
-  action       AuditAction
-  entity       String
-  entityId     String?
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId    String      @db.Uuid
+  userId        String?     @db.Uuid
+  action        AuditAction
+  entity        String
+  entityId      String?
   changesBefore Json?
   changesAfter  Json?
-  ipAddress    String?
-  userAgent    String?
-  previousHash String?
-  currentHash  String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  createdBy    String?
-  updatedBy    String?
+  ipAddress     String?
+  userAgent     String?
+  previousHash  String?
+  currentHash   String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  createdBy     String?
+  updatedBy     String?
 
   user User? @relation(fields: [userId], references: [id])
 
@@ -2251,4 +2238,21 @@ model AuditLog {
   @@index([entity, entityId])
   @@index([userId])
   @@map("audit_logs")
+}
+
+model Attendance {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hospitalId String    @db.Uuid
+  employeeId String    @db.Uuid
+  clockIn    DateTime
+  clockOut   DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  createdBy  String?
+  updatedBy  String?
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+
+  @@index([hospitalId])
+  @@index([employeeId])
+  @@map("attendances")
 }

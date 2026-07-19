@@ -85,7 +85,7 @@ async function main() {
   );
   console.log('✅ 16-visits-prescriptions');
 
-  await seedLabOrdersResults(prisma, hospital, labTests);
+  await seedLabOrdersResults(prisma, hospital, labTests, patients, doctors);
   console.log('✅ 17-lab-orders-results');
 
   await seedAdmissions(prisma, hospital, patients, beds, users);

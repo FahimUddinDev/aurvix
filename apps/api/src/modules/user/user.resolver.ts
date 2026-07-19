@@ -6,14 +6,14 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserStatus } from '@prisma/client';
 
 @ObjectType('UserRole')
-class UserRoleType {
+export class UserRoleType {
   @Field(() => ID) id!: string;
   @Field() name!: string;
   @Field() displayName!: string;
 }
 
 @ObjectType('User')
-class UserType {
+export class UserType {
   @Field(() => ID) id!: string;
   @Field() email!: string;
   @Field() firstName!: string;

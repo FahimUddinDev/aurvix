@@ -5,7 +5,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 
 @ObjectType('Department')
-class DepartmentType {
+export class DepartmentType {
   @Field(() => ID) id!: string;
   @Field(() => ID) hospitalId!: string;
   @Field() name!: string;

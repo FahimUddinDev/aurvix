@@ -121,6 +121,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ),
         },
         {
+          href: '/doctors',
+          labelKey: 'doctors',
+          icon: (
+            <Icon path="M4.5 3h15A1.5 1.5 0 0121 4.5v15a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 19.5v-15A1.5 1.5 0 014.5 3zm5.5 4.5v3H7v2h3v3h2v-3h3v-2h-3v-3h-2z" />
+          ),
+        },
+        {
           href: '/appointments',
           labelKey: 'appointments',
           icon: (

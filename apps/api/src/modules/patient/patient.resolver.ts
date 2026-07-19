@@ -33,7 +33,7 @@ class PatientDocumentType {
 }
 
 @ObjectType('Patient')
-class PatientType {
+export class PatientType {
   @Field(() => ID) id!: string;
   @Field(() => ID) hospitalId!: string;
   @Field() uhid!: string;

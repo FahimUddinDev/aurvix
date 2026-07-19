@@ -1,6 +1,183 @@
-﻿import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
-export async function seedLabTests(prisma: PrismaClient, ...args: any[]): Promise<any> {
-  // TODO: Implement 09-lab-tests seed data
-  console.log('  [stub] 09-lab-tests');
+export async function seedLabTests(prisma: PrismaClient, hospital: { id: string }): Promise<any[]> {
+  const testsData = [
+    // CBC / Hematology
+    {
+      name: 'Hemoglobin (Hb)',
+      nameBn: 'হিমোগ্লোবিন',
+      code: 'HEM-HB',
+      category: 'HEMATOLOGY',
+      sampleType: 'Whole Blood (EDTA)',
+      normalRangeMale: '13.5 - 17.5',
+      normalRangeFemale: '12.0 - 15.5',
+      unit: 'g/dL',
+      price: 250,
+      turnaroundHrs: 4,
+    },
+    {
+      name: 'Total Count of WBC',
+      nameBn: 'ডব্লিউবিসি কাউন্ট',
+      code: 'HEM-WBC',
+      category: 'HEMATOLOGY',
+      sampleType: 'Whole Blood (EDTA)',
+      normalRangeMale: '4.0 - 11.0',
+      normalRangeFemale: '4.0 - 11.0',
+      unit: 'K/µL',
+      price: 250,
+      turnaroundHrs: 4,
+    },
+    {
+      name: 'Platelet Count',
+      nameBn: 'প্লাটিলেট কাউন্ট',
+      code: 'HEM-PLT',
+      category: 'HEMATOLOGY',
+      sampleType: 'Whole Blood (EDTA)',
+      normalRangeMale: '150 - 450',
+      normalRangeFemale: '150 - 450',
+      unit: 'K/µL',
+      price: 300,
+      turnaroundHrs: 4,
+    },
+
+    // Biochemistry (LFT, RFT, Lipid)
+    {
+      name: 'Serum Creatinine',
+      nameBn: 'সিরাম ক্রিয়েটিনিন',
+      code: 'BIO-CRE',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Serum',
+      normalRangeMale: '0.6 - 1.2',
+      normalRangeFemale: '0.5 - 1.1',
+      unit: 'mg/dL',
+      price: 400,
+      turnaroundHrs: 6,
+    },
+    {
+      name: 'Blood Urea Nitrogen (BUN)',
+      nameBn: 'ব্লাড ইউরিয়া নাইট্রোজেন',
+      code: 'BIO-BUN',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Serum',
+      normalRangeMale: '7 - 20',
+      normalRangeFemale: '7 - 20',
+      unit: 'mg/dL',
+      price: 350,
+      turnaroundHrs: 6,
+    },
+    {
+      name: 'Serum Bilirubin (Total)',
+      nameBn: 'সিরাম বিলিরুবিন (টোটাল)',
+      code: 'BIO-BIL-T',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Serum',
+      normalRangeMale: '0.2 - 1.2',
+      normalRangeFemale: '0.2 - 1.2',
+      unit: 'mg/dL',
+      price: 350,
+      turnaroundHrs: 6,
+    },
+    {
+      name: 'SGPT (ALT)',
+      nameBn: 'এসজিপিটি (এএলটি)',
+      code: 'BIO-ALT',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Serum',
+      normalRangeMale: '7 - 56',
+      normalRangeFemale: '7 - 56',
+      unit: 'U/L',
+      price: 400,
+      turnaroundHrs: 6,
+    },
+    {
+      name: 'SGOT (AST)',
+      nameBn: 'এসজিওটি (এএসটি)',
+      code: 'BIO-AST',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Serum',
+      normalRangeMale: '10 - 40',
+      normalRangeFemale: '10 - 40',
+      unit: 'U/L',
+      price: 400,
+      turnaroundHrs: 6,
+    },
+    {
+      name: 'Serum Cholesterol (Total)',
+      nameBn: 'সিরাম কোলেস্টেরল (টোটাল)',
+      code: 'BIO-CHOL',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Serum',
+      normalRangeMale: '120 - 200',
+      normalRangeFemale: '120 - 200',
+      unit: 'mg/dL',
+      price: 450,
+      turnaroundHrs: 8,
+    },
+    {
+      name: 'Random Blood Sugar (RBS)',
+      nameBn: 'র্যান্ডম ব্লাড সুগার (আরবিএস)',
+      code: 'BIO-RBS',
+      category: 'BIOCHEMISTRY',
+      sampleType: 'Fluoride Plasma',
+      normalRangeMale: '70 - 140',
+      normalRangeFemale: '70 - 140',
+      unit: 'mg/dL',
+      price: 150,
+      turnaroundHrs: 2,
+    },
+
+    // Serology / Immunology
+    {
+      name: 'TSH (Thyroid Stimulating Hormone)',
+      nameBn: 'টিএসএইচ',
+      code: 'IMM-TSH',
+      category: 'IMMUNOLOGY',
+      sampleType: 'Serum',
+      normalRangeMale: '0.4 - 4.5',
+      normalRangeFemale: '0.4 - 4.5',
+      unit: 'µIU/mL',
+      price: 700,
+      turnaroundHrs: 12,
+    },
+    {
+      name: 'HBsAg (Screening)',
+      nameBn: 'এইচবিএসএজি',
+      code: 'SER-HBS',
+      category: 'SEROLOGY',
+      sampleType: 'Serum',
+      normalRangeMale: 'Negative',
+      normalRangeFemale: 'Negative',
+      unit: 'Index',
+      price: 450,
+      turnaroundHrs: 4,
+    },
+  ];
+
+  const seededTests = [];
+
+  for (const t of testsData) {
+    const testId = `00000000-0000-0000-0005-${String(testsData.indexOf(t) + 1).padStart(12, '0')}`;
+    const test = await prisma.labTest.upsert({
+      where: { id: testId },
+      update: {},
+      create: {
+        id: testId,
+        hospitalId: hospital.id,
+        name: t.name,
+        nameBn: t.nameBn,
+        code: t.code,
+        category: t.category,
+        sampleType: t.sampleType,
+        normalRangeMale: t.normalRangeMale,
+        normalRangeFemale: t.normalRangeFemale,
+        unit: t.unit,
+        price: t.price,
+        turnaroundHrs: t.turnaroundHrs,
+        isActive: true,
+      },
+    });
+    seededTests.push(test);
+  }
+
+  return seededTests;
 }
